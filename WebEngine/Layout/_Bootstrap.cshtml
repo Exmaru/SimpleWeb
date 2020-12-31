@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "~/Layout/_Empty.cshtml";
+}
+@RenderBody()
+
+@section headerLayer {
+<link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css" />
+<!--https://lipis.github.io/bootstrap-sweetalert/-->
+@RenderSection("headerLayer", false)
+}
+
+@section footerLayer {
+@RenderSection("footerLayer", false)
+}
+
+@section scriptLayer {
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
+@RenderSection("scriptLayer", false)
+}
+

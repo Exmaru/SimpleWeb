@@ -3,3 +3,9 @@
 ################################################################################
 
 /.vs/SimpleWeb.NET
+/packages
+/WebEngine/bin
+/WebEngine/obj
+/WebEngine.Database/obj/Debug
+/WebEngine.Database/WebEngine.Database.jfm
+/WebEngine.Database/WebEngine.Database.dbmdl

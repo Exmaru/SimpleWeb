@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "~/Layout/_Base.cshtml";
+}
+@RenderBody()
+
+@section headerLayer {
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+@RenderSection("headerLayer", false)
+}
+
+@section footerLayer {
+@RenderSection("footerLayer", false)
+}
+
+@section scriptLayer {
+<script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+<script src="//kit.fontawesome.com/5395c296b4.js" crossorigin="anonymous"></script>
+@RenderSection("scriptLayer", false)
+}
+
