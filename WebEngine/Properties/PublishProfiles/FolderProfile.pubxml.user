@@ -4,7 +4,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <_PublishTargetUrl>D:\Compiles\SimpleWeb</_PublishTargetUrl>
+    <_PublishTargetUrl>V:\DotNetWeb\SMN_HUX</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/Antlr3.Runtime.dll">
@@ -524,13 +524,16 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/18/2020 15:34:41</publishTime>
     </File>
     <File Include="bin/WebEngine.dll">
-      <publishTime>12/31/2020 10:10:46</publishTime>
+      <publishTime>01/11/2021 11:54:31</publishTime>
     </File>
     <File Include="bin/WebEngine.pdb">
-      <publishTime>12/31/2020 10:10:46</publishTime>
+      <publishTime>01/11/2021 11:54:31</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>07/17/2013 17:03:52</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>01/11/2021 11:46:01</publishTime>
     </File>
     <File Include="Index.cshtml">
       <publishTime>12/31/2020 10:06:32</publishTime>
@@ -545,7 +548,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>12/31/2020 10:02:27</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>12/31/2020 10:10:46</publishTime>
+      <publishTime>01/11/2021 11:52:15</publishTime>
     </File>
   </ItemGroup>
 </Project>

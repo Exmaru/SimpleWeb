@@ -123,9 +123,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="Models\DBHelpercs.cs" />
     <Compile Include="Models\Logger.cs" />
     <Compile Include="Models\SimpleConfig.cs" />

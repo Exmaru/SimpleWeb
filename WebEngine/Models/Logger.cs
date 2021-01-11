@@ -35,12 +35,12 @@ namespace WebEngine
             LoggingRule rule = new LoggingRule("*", LogLevel.Debug, fileTarget);
             config.LoggingRules.Add(rule);
             LogManager.Configuration = config;
-            logger = LogManager.GetLogger(SimpleConfig.Current.GetString("AppID"));
+            logger = LogManager.GetLogger(SimpleConfig.Global.GetString("AppID"));
         }
 
         public void Debug(string msg)
         {
-            if (SimpleConfig.Current.GetInt(LoggerLevel) >= 5)
+            if (SimpleConfig.Global.GetInt(LoggerLevel) >= 5)
             {
                 logger.Debug(msg);
             }
@@ -48,7 +48,7 @@ namespace WebEngine
 
         public void Debug<T>(T target)
         {
-            if (SimpleConfig.Current.GetInt(LoggerLevel) >= 5)
+            if (SimpleConfig.Global.GetInt(LoggerLevel) >= 5)
             {
                 logger.Debug(jsonHandler.Serialize(target));
             }
@@ -66,7 +66,7 @@ namespace WebEngine
 
         public void Warn(string msg)
         {
-            if (SimpleConfig.Current.GetInt(LoggerLevel) >= 3)
+            if (SimpleConfig.Global.GetInt(LoggerLevel) >= 3)
             {
                 logger.Warn(msg);
             }
@@ -74,7 +74,7 @@ namespace WebEngine
 
         public void Fatal(string msg)
         {
-            if (SimpleConfig.Current.GetInt(LoggerLevel) >= 4)
+            if (SimpleConfig.Global.GetInt(LoggerLevel) >= 4)
             {
                 logger.Fatal(msg);
             }
@@ -82,7 +82,7 @@ namespace WebEngine
 
         public void Info(string msg)
         {
-            if (SimpleConfig.Current.GetInt(LoggerLevel) >= 2)
+            if (SimpleConfig.Global.GetInt(LoggerLevel) >= 2)
             {
                 logger.Info(msg);
             }
@@ -90,7 +90,7 @@ namespace WebEngine
 
         public void Info<T>(T target)
         {
-            if (SimpleConfig.Current.GetInt(LoggerLevel) >= 2)
+            if (SimpleConfig.Global.GetInt(LoggerLevel) >= 2)
             {
                 logger.Info(jsonHandler.Serialize(target));
             }

@@ -17,7 +17,7 @@ namespace WebEngine
         public DBHelpercs()
         {
             this.DB = new Repository();
-            this.DB.Open(SimpleConfig.Current.GetConnection("DBConn"));
+            this.DB.Open(SimpleConfig.Global.GetConnection("DBConn"));
         }
 
         protected virtual void Dispose(bool disposing)

@@ -9,6 +9,7 @@ namespace WebEngine
     {
         public Repository() : base()
         {
+            this.Open(SimpleConfig.Global.GetConnection("DBConn"));
         }
     }
 }
