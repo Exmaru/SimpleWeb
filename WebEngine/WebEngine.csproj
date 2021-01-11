@@ -131,6 +131,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DBHelpercs.cs" />
+    <Compile Include="Models\DbResult.cs" />
     <Compile Include="Models\Logger.cs" />
     <Compile Include="Models\SimpleConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
