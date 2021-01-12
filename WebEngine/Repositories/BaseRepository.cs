@@ -44,6 +44,10 @@ namespace WebEngine
 				{
 					if (this.SqlConn != null)
 					{
+						if (this.SqlConn.State == System.Data.ConnectionState.Open)
+                        {
+							this.SqlConn.Close();
+						}
 						this.SqlConn.Dispose();
 					}
 				}
@@ -55,12 +59,12 @@ namespace WebEngine
 			Dispose(false);
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			Dispose(true);
 		}
 
-		public DataTable ExecuteTable(string query)
+		public virtual DataTable ExecuteTable(string query)
 		{
 			DataTable result = null;
 
@@ -73,7 +77,7 @@ namespace WebEngine
 			return result;
 		}
 
-		public int ExecuteCount(string query)
+		public virtual int ExecuteCount(string query)
 		{
 			int result = 0;
 

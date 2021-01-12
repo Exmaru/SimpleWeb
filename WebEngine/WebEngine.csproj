@@ -132,7 +132,11 @@
     </Compile>
     <Compile Include="Models\DBHelpercs.cs" />
     <Compile Include="Models\DbResult.cs" />
+    <Compile Include="Models\GlobalExtension.cs" />
+    <Compile Include="Models\GlobalUtility.cs" />
     <Compile Include="Models\Logger.cs" />
+    <Compile Include="Models\ReturnValue.cs" />
+    <Compile Include="Models\ReturnValues.cs" />
     <Compile Include="Models\SimpleConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
@@ -185,6 +189,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy .\*.* V:\DotNetWeb\SMN_HUX\bin\ /E /C /H /Y /Q /d
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
