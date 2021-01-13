@@ -1,0 +1,18 @@
+﻿@using WebEngine;
+@{
+    Global.Init(this);
+
+    int Amount = Request.GetInt("Amount", 50);
+    ReturnValue result = new ReturnValue();
+
+    if (IsPost)
+    {
+        result.Success(Amount);
+        result.Value = "Hello, Ajax";
+    }
+    else
+    {
+        result.Error("do not working");
+    }
+}
+@Response.Json(result)

@@ -1,0 +1,97 @@
+﻿@using WebEngine;
+@{
+    Global.Init(this);
+
+    int Amount = Request.GetInt("Amount", 50);
+    long SampleSeq = Request.GetLong("SampleSeq", -1);
+
+    DbResult result = new DbResult();
+    DateTime serverTime = new DateTime();
+    DbRow detail = new DbRow();
+
+    using (var db = new DbHelper())
+    {
+        var query1 = db.ExecuteQuery("select * from Sample with (nolock) where Amount > @Amount order by SampleSeq desc");
+        query1.AddInput("@Amount", "int", Amount);
+        result = query1.ExecuteDbResult();
+        var query2 = db.ExecuteQuery("select getdate()");
+        serverTime = Convert.ToDateTime(query2.ExecuteScalar());
+        if (SampleSeq > 0)
+        {
+            detail = result.Find("SampleSeq", SampleSeq);
+        }
+        else
+        {
+            detail = result.First;
+        }
+    }
+
+    Layout = "~/Layout/_Bootstrap.cshtml";
+}
+<h3>Hello, Test Server</h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Seq</th>
+            <th>Title</th>
+            <th>Amount</th>
+            <th>RegistDate</th>
+            <th>IsEnabled</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in result.List)
+        {
+            <tr style="cursor:pointer" onclick="location.href='sample?SampleSeq=@(item.GetLong("SampleSeq"))&Amount=@(Amount)'">
+                <td>@(item.GetLong("SampleSeq"))</td>
+                <td>@(item.GetString("Title"))</td>
+                <td>@(item.GetInt("Amount"))</td>
+                <td>@(item.GetDateTime("RegistDate").ToString("yyyy-MM-dd"))</td>
+                <td>@(item.GetBoolean("IsEnabled"))</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<br />
+<div>
+    <h3>@(detail.GetString("Title"))</h3>
+    <p>Amount : @(detail.GetInt("Amount"))</p>
+    <p>RegistDate : @(detail.GetDateTime("RegistDate"))</p>
+    <p>IsEnabled : @(detail.GetBoolean("IsEnabled"))</p>
+</div>
+
+<br />
+<br />
+<p>
+    <h3>@(Amount)</h3>
+    <h3>@(serverTime)</h3>
+        </p>
+        <br />
+        <br />
+        <p>
+            <button type="button" onclick="onAjaxTest()">Ajax Test</button>
+            <div id="ajaxLayer">
+            </div>
+        </p>
+        <br />
+        <br />
+        <p>
+            <button type="button" onclick="Alert('test')">Bundle Test</button>
+        </p>
+
+        @section scriptLayer {
+            <script>
+    function onAjaxTest() {
+        $.post("/ajax", { amount : "@(Amount)" }, function(rst) {
+            console.log(rst);
+
+            if (rst.Check) {
+                $("#ajaxLayer").html(rst.Value);
+            } else {
+                alert(rst.Message);
+            }
+        });
+    };
+            </script>
+        }

@@ -149,7 +149,9 @@
     <Content Include="Layout\_Base.cshtml" />
     <Content Include="Layout\_Empty.cshtml" />
     <Content Include="Layout\_Bootstrap.cshtml" />
+    <Content Include="ajax.cshtml" />
     <None Include="packages.config" />
+    <Content Include="sample.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
