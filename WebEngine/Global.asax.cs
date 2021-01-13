@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.IO.Compression;
+using System.Text;
 using System.Web;
+using System.Web.Optimization;
 using System.Web.WebPages;
 
 namespace WebEngine
@@ -11,6 +14,8 @@ namespace WebEngine
         public static string ConnectionString { get; set; }
 
         public static bool IsCompress { get; set; } = false;
+
+        public static bool IsBundle { get; set; } = false;
 
         public static ConcurrentDictionary<string, string> Collection { get; set; } = new ConcurrentDictionary<string, string>();
 
@@ -78,7 +83,7 @@ namespace WebEngine
 
         public static void Init(WebPage page, string mode)
         {
-            string acceptEncoding = string.Empty;
+            
 
             if (!string.IsNullOrWhiteSpace(mode))
             {
@@ -94,45 +99,34 @@ namespace WebEngine
                 }
                 else
                 {
-                    if (IsCompress)
-                    {
-                        acceptEncoding = page.Context.Request.Headers["Accept-Encoding"];
-                        if (!string.IsNullOrWhiteSpace(acceptEncoding))
-                        {
-                            if (acceptEncoding.Contains("GZIP"))
-                            {
-                                page.Context.Response.AppendHeader("Content-Encoding", "gzip");
-                                page.Context.Response.Filter = new GZipStream(HttpContext.Current.Response.Filter, CompressionMode.Compress);
-                            }
-                            else if (acceptEncoding.Contains("DEFLATE"))
-                            {
-                                page.Context.Response.AppendHeader("Content-Encoding", "deflate");
-                                page.Context.Response.Filter = new DeflateStream(HttpContext.Current.Response.Filter, CompressionMode.Compress);
-                            }
-
-                        }
-                    }
+                    Setup(page);
                 }
             }
             else
             {
-                if (IsCompress)
-                {
-                    acceptEncoding = page.Context.Request.Headers["Accept-Encoding"];
-                    if (!string.IsNullOrWhiteSpace(acceptEncoding))
-                    {
-                        if (acceptEncoding.Contains("GZIP"))
-                        {
-                            page.Context.Response.AppendHeader("Content-Encoding", "gzip");
-                            page.Context.Response.Filter = new GZipStream(HttpContext.Current.Response.Filter, CompressionMode.Compress);
-                        }
-                        else if (acceptEncoding.Contains("DEFLATE"))
-                        {
-                            page.Context.Response.AppendHeader("Content-Encoding", "deflate");
-                            page.Context.Response.Filter = new DeflateStream(HttpContext.Current.Response.Filter, CompressionMode.Compress);
-                        }
+                Setup(page);
 
+            }
+        }
+
+        protected static void Setup(WebPage page)
+        {
+            if (IsCompress)
+            {
+                string acceptEncoding = page.Context.Request.Headers["Accept-Encoding"];
+                if (!string.IsNullOrWhiteSpace(acceptEncoding))
+                {
+                    if (acceptEncoding.Contains("GZIP"))
+                    {
+                        page.Context.Response.AppendHeader("Content-Encoding", "gzip");
+                        page.Context.Response.Filter = new GZipStream(HttpContext.Current.Response.Filter, CompressionMode.Compress);
                     }
+                    else if (acceptEncoding.Contains("DEFLATE"))
+                    {
+                        page.Context.Response.AppendHeader("Content-Encoding", "deflate");
+                        page.Context.Response.Filter = new DeflateStream(HttpContext.Current.Response.Filter, CompressionMode.Compress);
+                    }
+
                 }
             }
         }
@@ -141,6 +135,7 @@ namespace WebEngine
         {
             ConnectionString = SimpleConfig.Global.GetConnection("DBConn");
             IsCompress = SimpleConfig.Global.GetBoolean("IsCompress");
+            IsBundle = SimpleConfig.Global.GetBoolean("IsBundle");
             Set("title", SimpleConfig.Global.GetString("title"));
             Set("siteurl", SimpleConfig.Global.GetString("siteurl"));
             Set("mobileurl", SimpleConfig.Global.GetString("mobileurl"));
@@ -156,10 +151,28 @@ namespace WebEngine
                 {
                     if (!string.IsNullOrWhiteSpace(file))
                     {
-                        XmlData.AddOrUpdate(file, Server.MapPath($"~/App_Data/{file}"), (oldKey, oldValue) => Server.MapPath($"~/App_Data/{file}"));
+                        XmlData.AddOrUpdate(file.Trim(), Server.MapPath($"~/App_Data/{file.Trim()}.xml"), (oldKey, oldValue) => Server.MapPath($"~/App_Data/{file.Trim()}.xml"));
                     }
                 }
             }
+
+            BundleCollection bundles = BundleTable.Bundles;
+            DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~/Scripts"));
+            if (di.Exists)
+            {
+                StringBuilder builder = new StringBuilder(200);
+                int num = 0;
+                foreach (FileInfo fi in di.GetFiles())
+                {
+                    if (num > 0) builder.Append(",");
+                    builder.Append($"~/Scripts/{fi.Name}");
+                    num++;
+                }
+                Logger.Current.Debug(builder.ToString());
+                bundles.Add(new ScriptBundle("~/Scripts/all").Include(builder.ToString().Split(',')));
+            }
+
+            BundleTable.EnableOptimizations = IsBundle;
 
             AppData.Current.Init();
         }
