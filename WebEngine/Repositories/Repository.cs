@@ -1,16 +1,13 @@
 ﻿using OctopusV3.Data;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 
 namespace WebEngine
 {
     public class Repository : BaseRepository
     {
-        protected string Query { get; set; } = string.Empty;
+        public string Query { get; set; } = string.Empty;
 
 		protected SqlCommand Cmd { get; set; }
 
@@ -125,9 +122,16 @@ namespace WebEngine
 			DataTable result = null;
 
 			result = this.Cmd.ExecuteTable();
+			
 
 			return result;
 		}
+
+		public virtual object ExecuteScalar()
+        {
+			return this.Cmd.ExecuteScalar();
+		}
+
 
 		public virtual int ExecuteCount()
 		{

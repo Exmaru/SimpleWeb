@@ -130,11 +130,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\DBHelpercs.cs" />
+    <Compile Include="Models\AppData.cs" />
+    <Compile Include="Models\AuthException.cs" />
     <Compile Include="Models\DbResult.cs" />
     <Compile Include="Models\GlobalExtension.cs" />
     <Compile Include="Models\GlobalUtility.cs" />
     <Compile Include="Models\Logger.cs" />
+    <Compile Include="Models\DbHelper.cs" />
     <Compile Include="Models\ReturnValue.cs" />
     <Compile Include="Models\ReturnValues.cs" />
     <Compile Include="Models\SimpleConfig.cs" />
@@ -156,6 +158,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Abstracts\" />
     <Folder Include="Filters\" />
   </ItemGroup>
   <PropertyGroup>

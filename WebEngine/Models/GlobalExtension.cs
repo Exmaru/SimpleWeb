@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
-using System.Web.WebPages;
 
 namespace WebEngine
 {
@@ -11,7 +8,6 @@ namespace WebEngine
 
         private static readonly Lazy<GlobalUtility> lazy = new Lazy<GlobalUtility>(() => new GlobalUtility());
         public static GlobalUtility Utility { get { return lazy.Value; } }
-
     }
 
     public static class GlobalExtension
@@ -52,6 +48,20 @@ namespace WebEngine
             int result = default(int);
 
             if (int.TryParse(request.GetString(Name), out result))
+            {
+                return result;
+            }
+            else
+            {
+                return DefaultValue;
+            }
+        }
+
+        public static float GetFloat(this HttpRequestBase request, string Name, float DefaultValue = -1)
+        {
+            float result = default(float);
+
+            if (float.TryParse(request.GetString(Name), out result))
             {
                 return result;
             }

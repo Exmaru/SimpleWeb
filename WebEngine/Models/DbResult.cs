@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 
 namespace WebEngine
 {
@@ -43,7 +41,34 @@ namespace WebEngine
                 return this.Table.Rows;
             }
         }
-       
+
+        public DbRow First
+        {
+            get
+            {
+                return new DbRow(this.Table.Rows[0]);
+            }
+        }
+
+        public DbRow Find(int index)
+        {
+            return new DbRow(this.Table.Rows[index]);
+        }
+
+        public DbRow Find(string name, long seq)
+        {
+            DbRow result = null;
+            foreach(DataRow row in this.Table.Rows)
+            {
+                if (Convert.ToInt64(row[name]) == seq)
+                {
+                    result = new DbRow(row);
+                    break;
+                }
+            }
+            return result;
+        }
+
     }
 
     public class DbRow
@@ -97,6 +122,19 @@ namespace WebEngine
         {
             long result = -1;
             if (long.TryParse(this.GetString(name), out result))
+            {
+                return result;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public virtual float GetFloat(string name)
+        {
+            float result = -1;
+            if (float.TryParse(this.GetString(name), out result))
             {
                 return result;
             }
