@@ -168,7 +168,7 @@ namespace WebEngine
                     builder.Append($"~/Scripts/{fi.Name}");
                     num++;
                 }
-                Logger.Current.Debug(builder.ToString());
+
                 bundles.Add(new ScriptBundle("~/Scripts/all").Include(builder.ToString().Split(',')));
             }
 

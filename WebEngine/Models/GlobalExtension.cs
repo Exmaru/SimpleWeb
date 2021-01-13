@@ -24,6 +24,7 @@ namespace WebEngine
 
         public static HtmlString Json(this HttpResponseBase response, object obj)
         {
+            response.ContentType = "application/json";
             return new HtmlString(GlobalSite.Utility.Serialize(obj));
         }
 
