@@ -9,12 +9,6 @@ Open Source WebSite for SimpleWeb.Net are a collection of open source components
     - [Prerequisites](#prerequisites)
     - [Basic Coding](#basic-coding)
     - [Web.Config](#web.config)
- - [Xamarin Supported Open Source Components](#xamarin-supported-open-source-components)
-    - [Xamarin.Essentials](#xamarinessentials)
- - [Community Provided Open Source Plugins](#community-provided-open-source-plugins)
-    - [Popular Plugins](#popular-plugins)
-    - [Data Caching & Databases](#data-caching--databases)
-    - [Create a Plugin for Xamarin](#create-a-plugin-for-xamarin)
 
 ---
 
