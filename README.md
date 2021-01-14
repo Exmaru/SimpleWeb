@@ -11,8 +11,7 @@ Open Source WebSite for SimpleWeb.Net are a collection of open source components
     - [Web.Config](#web-config)
     - [Database](#database)
     - [Ajax](#ajax)
-	- [Javascript minify] (#javascript-minify)
-
+    - [Javascript minify](#javascript-minify)
 ---
 
 ### Release
