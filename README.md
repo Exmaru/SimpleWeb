@@ -16,13 +16,13 @@ Open Source WebSite for SimpleWeb.Net are a collection of open source components
 
 See Only WebEngine.
 
-```sh
+```cs
 using WebEngine;
 ```
 
 The naming convention for the namespace in the `cs` file that is added to `App_Code` is to attach the WebEngine before it.
 
-```sh
+```cs
 using System;
 
 namespace WebEngine.Extension
@@ -43,7 +43,7 @@ namespace WebEngine.Extension
 
 Please call the layout after the declaration of the discharge.
 
-```sh
+```cs
 @using WebEngine;
 @{
     Global.Init(this);
@@ -55,13 +55,13 @@ Please call the layout after the declaration of the discharge.
 
 Or, you can specify the shape to be returned.
 
-```sh
+```cs
 Global.Init(this, "xml");
 ```
 
 The expanded Request makes it easier to acquire values.
 
-```sh
+```cs
     int Amount = Request.GetInt("Amount");
     long SampleSeq = Request.GetLong("SampleSeq", -1);
 ```
@@ -83,7 +83,7 @@ The following targets can be specified using the `Request.<target-name>(name, de
 You must set the connection syntax for connecting to the database.
 (The name must be set to `DBconn`)
 
-```sh
+```xml
 <connectionStrings>
 <add name="DBConn" connectionString="Data Source=localhost;Initial Catalog=SimpleWeb;User ID=userid;Password=password;Application Name=SimpleWeb" providerName="System.Data.SqlClient" />
 </connectionStrings>
