@@ -10,6 +10,7 @@ Open Source WebSite for SimpleWeb.Net are a collection of open source components
     - [Basic Coding](#basic-coding)
     - [Web.Config](#web-config)
     - [Database](#database)
+    - [Ajax](#ajax)
 
 ---
 
@@ -162,3 +163,32 @@ The following targets can be specified using the `DbRow`:
  - `GetDateTime` Returns the value from DbRow to DateTime.
 
 
+---
+
+
+### Ajax
+
+Use the `Response.Json` command to easily return objects to Json.
+
+```php
+@using WebEngine;
+@{
+    Global.Init(this);
+
+    int Amount = Request.GetInt("Amount", 50);
+    ReturnValue result = new ReturnValue();
+
+    if (IsPost)
+    {
+        result.Success(Amount);
+        result.Value = "Hello, Ajax";
+    }
+    else
+    {
+        result.Error("do not working");
+    }
+}
+@Response.Json(result)
+```
+
+ 
