@@ -191,4 +191,18 @@ Use the `Response.Json` command to easily return objects to Json.
 @Response.Json(result)
 ```
 
+Values can be returned using Javascript or JQuery.
  
+```javascript
+function onAjaxTest() {
+	$.post("/ajax", { amount : "@(Amount)" }, function(rst) {
+		console.log(rst);
+
+		if (rst.Check) {
+			$("#ajaxLayer").html(rst.Value);
+		} else {
+			alert(rst.Message);
+		}
+	});
+};
+```
