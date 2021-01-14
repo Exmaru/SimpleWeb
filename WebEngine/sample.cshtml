@@ -64,24 +64,24 @@
 <br />
 <br />
 <p>
-    <h3>@(Amount)</h3>
-    <h3>@(serverTime)</h3>
-        </p>
-        <br />
-        <br />
-        <p>
-            <button type="button" onclick="onAjaxTest()">Ajax Test</button>
-            <div id="ajaxLayer">
-            </div>
-        </p>
-        <br />
-        <br />
-        <p>
-            <button type="button" onclick="Alert('test')">Bundle Test</button>
-        </p>
+<h3>@(Amount)</h3>
+<h3>@(serverTime)</h3>
+</p>
+<br />
+<br />
+<p>
+    <button type="button" onclick="onAjaxTest()">Ajax Test</button>
+    <div id="ajaxLayer">
+    </div>
+</p>
+<br />
+<br />
+<p>
+    <button type="button" onclick="Alert('test')">Bundle Test</button>
+</p>
 
-        @section scriptLayer {
-            <script>
+@section scriptLayer {
+<script>
     function onAjaxTest() {
         $.post("/ajax", { amount : "@(Amount)" }, function(rst) {
             console.log(rst);
@@ -93,5 +93,5 @@
             }
         });
     };
-            </script>
-        }
+</script>
+}

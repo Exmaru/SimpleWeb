@@ -153,6 +153,7 @@
     <Content Include="ajax.cshtml" />
     <None Include="packages.config" />
     <Content Include="sample.cshtml" />
+    <Content Include="upload_sample.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

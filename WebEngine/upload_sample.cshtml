@@ -1,0 +1,30 @@
+﻿@using WebEngine;
+@{
+    Global.Init(this);
+
+    ReturnValue result = new ReturnValue();
+
+    if (IsPost)
+    {
+        using(var uploader = new UploadHelper())
+        {
+            uploader.Path = "/Upload/Sample";
+            HttpPostedFileBase file = null;
+            ReturnValue rtn = null;
+            foreach (string fileName in Request.Files)
+            {
+                file = Request.Files[fileName];
+                rtn = uploader.SaveAsUnique(file);
+                if (rtn.Check)
+                {
+                    //db 처리
+                }
+            }
+        }
+    }
+    else
+    {
+        result.Error("do not working");
+    }
+}
+@Response.Json(result)
