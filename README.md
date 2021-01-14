@@ -11,6 +11,7 @@ Open Source WebSite for SimpleWeb.Net are a collection of open source components
     - [Web.Config](#web-config)
     - [Database](#database)
     - [Ajax](#ajax)
+	- [Javascript minify] (#javascript-minify)
 
 ---
 
@@ -103,6 +104,7 @@ You can set the following options:
  - `LogLevel` You can set it from 1 to 5. If you set it to 5, all logs will be recorded. If you set it to 1, only errors will be recorded.
  - `AppID` The name of the application used to classify `Log` or to use the key names.
  - `IsBundle` Minify all files in the `Scripts` folder.
+ - `IsCompress` Adds Gzip compression to the header.
  - `CookieVar` The name of the cookie that is saved at login.
  - `title` The title of the website. Using in `SEO`.
  - `siteurl` The Representative URL of the website. Using in `SEO`.
