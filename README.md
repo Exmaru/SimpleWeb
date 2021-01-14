@@ -44,7 +44,7 @@ namespace WebEngine.Extension
 
 Please call the layout after the declaration of the discharge.
 
-```xml
+```php
 @using WebEngine;
 @{
     Global.Init(this);
@@ -114,42 +114,42 @@ You can set the following options:
 You can process queries using DbHelper with IDisposable implementation.
 
 ```cs
-    DbResult result = new DbResult();
-    DateTime serverTime = new DateTime();
-    DbRow detail = new DbRow();
+DbResult result = new DbResult();
+DateTime serverTime = new DateTime();
+DbRow detail = new DbRow();
 
-    using(var db  = new DbHelper())
-    {
-        var query1 = db.ExecuteQuery("select * from Sample with (nolock) where Amount > @Amount order by SampleSeq desc");
-        query1.AddInput("@Amount", "int", Amount);
-        result = query1.ExecuteDbResult();
-        var query2 = db.ExecuteQuery("select getdate()");
-        serverTime = Convert.ToDateTime(query2.ExecuteScalar());
-        if (SampleSeq > 0)
-        {
-            detail = result.Find("SampleSeq", SampleSeq);
-        }
-        else
-        {
-            detail = result.First;
-        }
-    }
+using(var db  = new DbHelper())
+{
+	var query1 = db.ExecuteQuery("select * from Sample with (nolock) where Amount > @Amount order by SampleSeq desc");
+	query1.AddInput("@Amount", "int", Amount);
+	result = query1.ExecuteDbResult();
+	var query2 = db.ExecuteQuery("select getdate()");
+	serverTime = Convert.ToDateTime(query2.ExecuteScalar());
+	if (SampleSeq > 0)
+	{
+		detail = result.Find("SampleSeq", SampleSeq);
+	}
+	else
+	{
+		detail = result.First;
+	}
+}
 ```
 
 You can perform a `foreach` statement using the `List` Property.
 
 
-```xml
-	@foreach(var item in result.List)
-	{
-		<tr style="cursor:pointer" onclick="location.href='sample?SampleSeq=@(item.GetLong("SampleSeq"))&Amount=@(Amount)'">
-			<td>@(item.GetLong("SampleSeq"))</td>
-			<td>@(item.GetString("Title"))</td>
-			<td>@(item.GetInt("Amount"))</td>
-			<td>@(item.GetDateTime("RegistDate").ToString("yyyy-MM-dd"))</td>
-			<td>@(item.GetBoolean("IsEnabled"))</td>
-		</tr>
-	}
+```php
+@foreach(var item in result.List)
+{
+	<tr style="cursor:pointer" onclick="location.href='sample?SampleSeq=@(item.GetLong("SampleSeq"))&Amount=@(Amount)'">
+		<td>@(item.GetLong("SampleSeq"))</td>
+		<td>@(item.GetString("Title"))</td>
+		<td>@(item.GetInt("Amount"))</td>
+		<td>@(item.GetDateTime("RegistDate").ToString("yyyy-MM-dd"))</td>
+		<td>@(item.GetBoolean("IsEnabled"))</td>
+	</tr>
+}
 ```
 
 The following targets can be specified using the `DbRow`:
