@@ -118,7 +118,7 @@ You can set the following options:
 
 ### Database
 
-You can process queries using DbHelper with IDisposable implementation.
+You can process queries using `DbHelper` with IDisposable implementation.
 
 ```cs
 DbResult result = new DbResult();
@@ -212,3 +212,15 @@ function onAjaxTest() {
 	});
 };
 ```
+
+---
+
+### Javascript minify
+
+If the `IsBundle` value is true, minify all files in the `Scripts` folder.
+
+```php
+@using System.Web.Optimization;
+@Scripts.Render("~/Scripts/all")
+```
+
