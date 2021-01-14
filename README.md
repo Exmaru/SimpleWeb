@@ -8,7 +8,8 @@ Open Source WebSite for SimpleWeb.Net are a collection of open source components
  - [Building](#building)
     - [Prerequisites](#prerequisites)
     - [Basic Coding](#basic-coding)
-    - [Web.Config](#web.config)
+    - [Web.Config](#web-config)
+    - [Database](#database)
 
 ---
 
@@ -43,7 +44,7 @@ namespace WebEngine.Extension
 
 Please call the layout after the declaration of the discharge.
 
-```cs
+```xml
 @using WebEngine;
 @{
     Global.Init(this);
@@ -78,7 +79,7 @@ The following targets can be specified using the `Request.<target-name>(name, de
 ---
 
 
-### Web.Config
+### Web Config
 
 You must set the connection syntax for connecting to the database.
 (The name must be set to `DBconn`)
@@ -90,7 +91,6 @@ You must set the connection syntax for connecting to the database.
 ```
 
 The current version(v.1.0) does not support multiple connections, only `MSSQL` is available.
-
 
 You can set the following options:
  - `LogLevel` You can set it from 1 to 5. If you set it to 5, all logs will be recorded. If you set it to 1, only errors will be recorded.
@@ -104,7 +104,61 @@ You can set the following options:
  - `keywords` The search keyword to use when the search engine exposes this site. Using in `SEO`.
  - `image` This is a thumbnail image used on SNS.
  - `XML` Set up when you want to use a separate XML dataset. The configured file is automatically created. You can specify multiple files separated by `.`.
+ 
+ 
+ ---
 
 
+### Database
+
+You can process queries using DbHelper with IDisposable implementation.
+
+```cs
+    DbResult result = new DbResult();
+    DateTime serverTime = new DateTime();
+    DbRow detail = new DbRow();
+
+    using(var db  = new DbHelper())
+    {
+        var query1 = db.ExecuteQuery("select * from Sample with (nolock) where Amount > @Amount order by SampleSeq desc");
+        query1.AddInput("@Amount", "int", Amount);
+        result = query1.ExecuteDbResult();
+        var query2 = db.ExecuteQuery("select getdate()");
+        serverTime = Convert.ToDateTime(query2.ExecuteScalar());
+        if (SampleSeq > 0)
+        {
+            detail = result.Find("SampleSeq", SampleSeq);
+        }
+        else
+        {
+            detail = result.First;
+        }
+    }
+```
+
+You can perform a `foreach` statement using the `List` Property.
+
+
+```xml
+	@foreach(var item in result.List)
+	{
+		<tr style="cursor:pointer" onclick="location.href='sample?SampleSeq=@(item.GetLong("SampleSeq"))&Amount=@(Amount)'">
+			<td>@(item.GetLong("SampleSeq"))</td>
+			<td>@(item.GetString("Title"))</td>
+			<td>@(item.GetInt("Amount"))</td>
+			<td>@(item.GetDateTime("RegistDate").ToString("yyyy-MM-dd"))</td>
+			<td>@(item.GetBoolean("IsEnabled"))</td>
+		</tr>
+	}
+```
+
+The following targets can be specified using the `DbRow`:
+
+ - `GetString` Returns the value from DbRow to String.
+ - `GetInt` Returns the value from DbRow to Int.
+ - `GetFloat` Returns the value from DbRow to Float.
+ - `GetLong` Returns the value from DbRow to Long.
+ - `GetBoolean` Returns the value from DbRow to Boolean.
+ - `GetDateTime` Returns the value from DbRow to DateTime.
 
 
