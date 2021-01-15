@@ -9,8 +9,6 @@ namespace WebEngine
         private static readonly Lazy<SimpleConfig> lazy = new Lazy<SimpleConfig>(() => new SimpleConfig());
         public static SimpleConfig Global { get { return lazy.Value; } }
 
-        public string Version { get; set; } = "1.0.0";
-
         public SimpleConfig()
         {
 

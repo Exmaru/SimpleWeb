@@ -256,6 +256,71 @@ namespace WEC
                                 Console.Write("\rRun at wec-update.bat.                                                       ");
                             }
                         }
+                        else if (List.ContainsKey("-V") || List.ContainsKey("-VERSION"))
+                        {
+                            if (!(List.ContainsKey("-I") || List.ContainsKey("-INSTALL") || List.ContainsKey("-U") || List.ContainsKey("-UPDATE")))
+                            {
+                                IsProc = false;
+
+                                if (List.TryGetValue("-V", out targetPath))
+                                {
+                                    IsProc = true;
+                                }
+                                else if (List.TryGetValue("-VERSION", out targetPath))
+                                {
+                                    IsProc = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("WEC Latest Version is 1.0.0");
+                                }
+
+
+
+                                if (IsProc && !string.IsNullOrWhiteSpace(targetPath))
+                                {
+                                    DirectoryInfo di = new DirectoryInfo(targetPath);
+                                    if (di.Exists)
+                                    {
+                                        FileInfo fi = new FileInfo(System.IO.Path.Combine(di.FullName, "web.config"));
+                                        if (fi.Exists)
+                                        {
+                                            XmlDocument doc = new XmlDocument();
+                                            doc.Load(fi.FullName);
+                                            XmlNodeList elements = doc.ChildNodes;
+                                            XmlNodeList appSettings = elements.Item(1).SelectNodes("appSettings").Item(0).SelectNodes("add");
+                                            foreach (XmlNode setting in appSettings)
+                                            {
+                                                if (setting != null && setting.Attributes != null)
+                                                {
+                                                    if (setting != null && setting.Attributes != null && setting.Attributes["key"].Value.Equals("Version", StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        Console.WriteLine($"Current Project Version is {setting.Attributes["value"].Value}");
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Unknown version.");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Not found SimpleWeb Project.");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("WEC Latest Version is 1.0.0");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("WEC Latest Version is 1.0.0");
+                            }
+                        }
                         else if (List.ContainsKey("-D") || List.ContainsKey("-DATABASE"))
                         {
                             if (List.TryGetValue("-D", out targetPath))
@@ -355,9 +420,9 @@ namespace WEC
                                 Console.WriteLine("The option is missing.  please input path.");
                             }
                         }
-                        else if (List.ContainsKey("-V") || List.ContainsKey("-VERSION"))
+                        else if (List.ContainsKey("-E") || List.ContainsKey("-ERASE"))
                         {
-                            Console.WriteLine("Latest Version is 1.0.0");
+                            Console.WriteLine("Erase....");
                         }
                         else
                         {
