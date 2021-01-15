@@ -55,4 +55,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy .\*.* C:\wec /E /C /H /Y /Q /d
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

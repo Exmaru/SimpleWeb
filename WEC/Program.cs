@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Data.SqlClient;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
+using System.Xml;
 
 namespace WEC
 {
@@ -20,6 +22,8 @@ namespace WEC
         const string LatestVersion = v1_0_0;
 
         static ConcurrentDictionary<string, string> List = new ConcurrentDictionary<string, string>();
+
+        static ConcurrentDictionary<string, string> Connections = new ConcurrentDictionary<string, string>();
 
         static void Main(string[] args)
         {
@@ -252,6 +256,105 @@ namespace WEC
                                 Console.Write("\rRun at wec-update.bat.                                                       ");
                             }
                         }
+                        else if (List.ContainsKey("-D") || List.ContainsKey("-DATABASE"))
+                        {
+                            if (List.TryGetValue("-D", out targetPath))
+                            {
+                                IsProc = true;
+                            }
+                            else if (List.TryGetValue("-DATABASE", out targetPath))
+                            {
+                                IsProc = true;
+                            }
+                            else
+                            {
+                                IsProc = false;
+                            }
+
+                            if (IsProc && !string.IsNullOrWhiteSpace(targetPath))
+                            {
+                                DirectoryInfo di = new DirectoryInfo(targetPath);
+                                if (di.Exists)
+                                {
+                                    FileInfo fi = new FileInfo(System.IO.Path.Combine(di.FullName, "web.config"));
+                                    if (fi.Exists)
+                                    {
+                                        XmlDocument doc = new XmlDocument();
+                                        doc.Load(fi.FullName);
+                                        XmlNodeList elements = doc.ChildNodes;
+                                        XmlNodeList connectionStrings = elements.Item(1).SelectNodes("connectionStrings").Item(0).SelectNodes("add");
+
+                                        string firstKey = string.Empty;
+                                        int num = 0;
+
+                                        foreach(XmlNode node in connectionStrings)
+                                        {
+                                            if (num == 0) firstKey = node.Attributes["name"].Value;
+                                            Connections.AddOrUpdate(node.Attributes["name"].Value, node.Attributes["connectionString"].Value, (oldkey, oldValue) => node.Attributes["connectionString"].Value);
+                                            num++;
+                                        }
+
+                                        string connStr = string.Empty;
+                                        IsProc = false;
+                                        if (Connections != null && Connections.Count > 0)
+                                        {
+                                            if (Connections.ContainsKey("DBConn"))
+                                            {
+                                                if (Connections.TryGetValue("DBConn", out connStr))
+                                                {
+                                                    IsProc = true;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (Connections.TryGetValue(firstKey, out connStr))
+                                                {
+                                                    IsProc = true;
+                                                }
+                                            }
+                                        }
+                                        
+                                        if (IsProc && !string.IsNullOrWhiteSpace(connStr))
+                                        {
+                                            try
+                                            {
+                                                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connStr);
+                                                builder.ConnectTimeout = 3;
+                                                Console.WriteLine($"Try Connection Database : {builder.DataSource}");
+                                                using (SqlConnection SqlConn = new SqlConnection(builder.ConnectionString))
+                                                using (SqlCommand cmd = new SqlCommand())
+                                                {
+                                                    SqlConn.Open();
+                                                    cmd.Connection = SqlConn;
+                                                    SqlConn.Close();
+                                                }
+                                            }
+                                            catch (SqlException sqlex)
+                                            {
+                                                Console.WriteLine(sqlex.Message);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Console.WriteLine(ex.Message);
+                                            }
+                                        }
+                                       
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Not Found File : web.config");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Not Found Directory : {targetPath}");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("The option is missing.  please input path.");
+                            }
+                        }
                         else if (List.ContainsKey("-V") || List.ContainsKey("-VERSION"))
                         {
                             Console.WriteLine("Latest Version is 1.0.0");
@@ -281,9 +384,11 @@ namespace WEC
             Console.WriteLine("/?, /Help : You can see instructions on how to use it.");
             Console.WriteLine("");
             Console.WriteLine("-i {install path}, -install {install path}: Install the latest version of WebEngine.");
+            Console.WriteLine("-u, -update: update the latest version of WEC.");
             Console.WriteLine("-u {install path}, -update {install path}: update the latest version of WebEngine.");
             Console.WriteLine("-v, -version: Display latest version of WebEngine.");
             Console.WriteLine("-v {version}, -version {version} + install or update : Installing with a specific version.");
+            Console.WriteLine("-d {project root}, -database {project root} : Initialize Database.");
             Console.WriteLine("");
             Console.WriteLine("Welcome WebEngine Helper Command.");
         }
