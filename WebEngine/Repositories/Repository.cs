@@ -16,13 +16,26 @@ namespace WebEngine
             this.Open(Global.ConnectionString);
         }
 
-        public Repository(string query, CommandType type = CommandType.Text) : base()
+		public Repository(string connName) : base()
+		{
+			this.Open(Global.Connection(connName));
+		}
+
+		public Repository(string query, CommandType type = CommandType.Text) : base()
         {
             this.Open(Global.ConnectionString);
             this.Query = query;
 			this.Cmd = new SqlCommand(this.Query, this.SqlConn);
 			this.Cmd.CommandType = type;
         }
+
+		public Repository(string connName, string query, CommandType type = CommandType.Text) : base()
+		{
+			this.Open(Global.Connection(connName));
+			this.Query = query;
+			this.Cmd = new SqlCommand(this.Query, this.SqlConn);
+			this.Cmd.CommandType = type;
+		}
 
 		public SqlCommand Command
         {

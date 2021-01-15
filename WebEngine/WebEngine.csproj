@@ -197,6 +197,9 @@
   </Target>
   <PropertyGroup>
     <PostBuildEvent>xcopy .\*.* V:\DotNetWeb\SMN_HUX\bin\ /E /C /H /Y /Q /d
+xcopy .\*.* X:\SimpleWeb.Net\bin\ /E /C /H /Y /Q /d
+
+
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

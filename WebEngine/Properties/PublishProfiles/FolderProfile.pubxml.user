@@ -4,9 +4,12 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <_PublishTargetUrl>V:\DotNetWeb\SMN_HUX</_PublishTargetUrl>
+    <_PublishTargetUrl>X:\SimpleWeb.Net</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
+    <File Include="ajax.cshtml">
+      <publishTime>01/13/2021 15:42:39</publishTime>
+    </File>
     <File Include="bin/Antlr3.Runtime.dll">
       <publishTime>02/22/2013 08:43:40</publishTime>
     </File>
@@ -524,10 +527,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/18/2020 15:34:41</publishTime>
     </File>
     <File Include="bin/WebEngine.dll">
-      <publishTime>01/12/2021 10:55:06</publishTime>
+      <publishTime>01/14/2021 12:35:31</publishTime>
     </File>
     <File Include="bin/WebEngine.pdb">
-      <publishTime>01/12/2021 10:55:06</publishTime>
+      <publishTime>01/14/2021 12:35:31</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>07/17/2013 17:03:52</publishTime>
@@ -545,10 +548,16 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>12/31/2020 10:09:51</publishTime>
     </File>
     <File Include="Layout/_Empty.cshtml">
-      <publishTime>12/31/2020 10:02:27</publishTime>
+      <publishTime>01/13/2021 15:04:08</publishTime>
+    </File>
+    <File Include="sample.cshtml">
+      <publishTime>01/14/2021 08:49:39</publishTime>
+    </File>
+    <File Include="upload_sample.cshtml">
+      <publishTime>01/14/2021 09:15:31</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>01/12/2021 10:55:06</publishTime>
+      <publishTime>01/14/2021 12:35:33</publishTime>
     </File>
   </ItemGroup>
 </Project>

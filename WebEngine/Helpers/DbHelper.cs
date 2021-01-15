@@ -7,14 +7,36 @@ namespace WebEngine
     {
 
         protected ConcurrentDictionary<string, Repository> Repositories { get; set; } = new ConcurrentDictionary<string, Repository>();
-        
+
+        protected string ConnectionName { get; set; } = string.Empty;
+
+        public DbHelper() : this("DBConn")
+        {
+        }
+
+        public DbHelper(string connName)
+        {
+            this.ConnectionName = connName;
+        }
+
 
 
         public Repository ExecuteQuery(string query)
         {
-            var target = new Repository(query);
-            this.Repositories.AddOrUpdate(query, target, (oldkey, oldvalue) => target);
-            return target;
+            Repository result = null;
+            if (!string.IsNullOrWhiteSpace(this.ConnectionName))
+            {
+                result = new Repository(this.ConnectionName, query);
+                this.Repositories.AddOrUpdate(query, result, (oldkey, oldvalue) => result);
+            }
+            else
+            {
+                result = new Repository(query);
+                this.Repositories.AddOrUpdate(query, result, (oldkey, oldvalue) => result);
+            }
+
+            return result;
+
         }
 
 

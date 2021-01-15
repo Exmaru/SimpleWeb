@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Configuration;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -11,7 +12,36 @@ namespace WebEngine
 {
     public class Global : System.Web.HttpApplication
     {
-        public static string ConnectionString { get; set; }
+        private static string FirstKey = "DBConn";
+
+        public static string ConnectionString
+        {
+            get
+            {
+                string result = string.Empty;
+                if (Connections.ContainsKey(FirstKey) && Connections.TryGetValue(FirstKey, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
+        public static string Connection(string connName)
+        {
+            string result = string.Empty;
+            if (Connections.TryGetValue(connName, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
 
         public static bool IsCompress { get; set; } = false;
 
@@ -20,6 +50,8 @@ namespace WebEngine
         public static ConcurrentDictionary<string, string> Collection { get; set; } = new ConcurrentDictionary<string, string>();
 
         public static ConcurrentDictionary<string, string> XmlData { get; set; } = new ConcurrentDictionary<string, string>();
+
+        public static ConcurrentDictionary<string, string> Connections { get; set; } = new ConcurrentDictionary<string, string>();
 
         public static bool IsExists(string key)
         {
@@ -133,7 +165,20 @@ namespace WebEngine
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            ConnectionString = SimpleConfig.Global.GetConnection("DBConn");
+            if (ConfigurationManager.ConnectionStrings != null)
+            {
+                int num = 0;
+                foreach(ConnectionStringSettings conn in ConfigurationManager.ConnectionStrings)
+                {
+                    if (!conn.Name.Equals("LocalSqlServer", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (num == 0) FirstKey = conn.Name;
+                        Connections.AddOrUpdate(conn.Name, conn.ConnectionString, (oldKey, oldValue) => conn.ConnectionString);
+                        num++;
+                    }
+                }
+            }
+
             IsCompress = SimpleConfig.Global.GetBoolean("IsCompress");
             IsBundle = SimpleConfig.Global.GetBoolean("IsBundle");
             Set("title", SimpleConfig.Global.GetString("title"));

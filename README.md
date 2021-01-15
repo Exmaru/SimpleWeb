@@ -90,7 +90,7 @@ The following targets can be specified using the `Request.<target-name>(name, de
 ### Web Config
 
 You must set the connection syntax for connecting to the database.
-(The name must be set to `DBconn`)
+(The default is `DBconn`)
 
 ```xml
 <connectionStrings>
@@ -98,7 +98,7 @@ You must set the connection syntax for connecting to the database.
 </connectionStrings>
 ```
 
-The current version(v.1.0) does not support multiple connections, only `MSSQL` is available.
+The current version(v.1.0) does not support other databases, only `MSSQL` is available.
 
 You can set the following options:
  - `LogLevel` You can set it from 1 to 5. If you set it to 5, all logs will be recorded. If you set it to 1, only errors will be recorded.
@@ -127,7 +127,7 @@ DbResult result = new DbResult();
 DateTime serverTime = new DateTime();
 DbRow detail = new DbRow();
 
-using(var db  = new DbHelper())
+using(var db  = new DbHelper())  --new DbHelper('dbconnectionName?{default:DBConn}')
 {
 	var query1 = db.ExecuteQuery("select * from Sample with (nolock) where Amount > @Amount order by SampleSeq desc");
 	query1.AddInput("@Amount", "int", Amount);
