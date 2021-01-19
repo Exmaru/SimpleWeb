@@ -1,4 +1,4 @@
-# Open Source WebSite for .NET
+# Window Command for SimpleWeb.NET 
 
 [![GitHub License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/Exmaru/SimpleWeb)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Exmaru/SimpleWeb/issues)
