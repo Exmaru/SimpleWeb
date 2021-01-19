@@ -64,6 +64,8 @@ The following options are available:
  - `-v {version}`,`-version {version}` install or update with specific version.
  - `-d {project root}`,`-database {project root}` initialize Database.
  
+[Configuration Computer Guide](http://simpleweb.exmaru.com/Document/GetStarted/WEC)
+ 
 ---
 
 
