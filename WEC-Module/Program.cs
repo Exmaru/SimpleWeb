@@ -252,6 +252,7 @@ namespace WEC_Module
                                                 Console.WriteLine(ex.Message);
                                             }
                                         }
+                                        fi.Delete();
                                     }
                                 }
                                 Console.WriteLine("");

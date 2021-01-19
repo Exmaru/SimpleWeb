@@ -68,7 +68,7 @@ First, install the function with the installed WEC command.
 C:\>wec -u
 ```
 
-You can update the wc with the wc-update command.
+You can update the wec with the wec-update command.
 
 ```cmd
 C:\>wec-update

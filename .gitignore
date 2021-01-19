@@ -22,3 +22,5 @@
 /Module.Board/bin/Debug
 /Module.Board/obj/Debug
 *.refactorlog
+/Module.DynamicPage/bin/Debug
+/Module.DynamicPage/obj/Debug
