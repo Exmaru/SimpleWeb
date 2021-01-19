@@ -12,6 +12,9 @@ Open Source WebSite for SimpleWeb.Net are a collection of open source components
     - [Database](#database)
     - [Ajax](#ajax)
     - [Javascript minify](#javascript-minify)
+ - [WEC](#wec)
+    - [a relative link](https://github.com/Exmaru/SimpleWeb/blob/main/wec.md)
+
 ---
 
 ### Release
