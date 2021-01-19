@@ -193,7 +193,7 @@ namespace WEC_Module
                                             {
                                                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(conn);
                                                 builder.ConnectTimeout = 3;
-                                                Console.WriteLine($"Try Connection Database : {builder.DataSource}");
+                                                Console.WriteLine($"Try Connection Database : {builder.DataSource} {builder.InitialCatalog}");
                                                 using (SqlConnection SqlConn = new SqlConnection(builder.ConnectionString))
                                                 using (SqlCommand cmd = new SqlCommand())
                                                 {
@@ -208,7 +208,7 @@ namespace WEC_Module
 
                                                     if (rtn > 0)
                                                     {
-                                                        sqls = "select count(1) from sys.all_objects where [type_desc] = 'USER_TABLE' and [name] = 'BoardMasters'";
+                                                        sqls = $"select count(1) from sys.all_objects where [type_desc] = 'USER_TABLE' and [name] Like '{targetModule}%'";
                                                         cmd.CommandText = sqls;
                                                         rtn = Convert.ToInt32(cmd.ExecuteScalar());
 
