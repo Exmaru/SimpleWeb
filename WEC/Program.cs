@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -11,15 +12,50 @@ namespace WEC
 {
     class Program
     {
-        const string wecURL = "http://simpleweb.exmaru.com/Content/release/wec.zip";
+        private static string repo_site = null;
 
-        const string LatestDownload = "http://simpleweb.exmaru.com/Content/release/latest.zip";
+        static string LatestDownload 
+        {
+            get
+            {
+                return $"{repo_site}/Content/release/latest.zip";
+            }
+        }
 
-        const string d1_0_0 = "http://simpleweb.exmaru.com/Content/release/latest.zip";
 
-        const string v1_0_0 = "http://simpleweb.exmaru.com/Content/release/v1/v1_0_0/WebEngine.dll";
+        static string d1_0_0
+        {
+            get
+            {
+                return $"{repo_site}/Content/release/latest.zip";
+            }
+        }
 
-        const string LatestVersion = v1_0_0;
+        static string v1_0_0
+        {
+            get
+            {
+                return $"{repo_site}/Content/release/v1/v1_0_0/WebEngine.dll";
+            }
+        }
+
+        static string updater
+        {
+            get
+            {
+                return $"{repo_site}/Content/release/function.zip";
+            }
+        }
+
+
+
+        static string LatestVersion
+        {
+            get
+            {
+                return v1_0_0;
+            }
+        }
 
         static ConcurrentDictionary<string, string> List = new ConcurrentDictionary<string, string>();
 
@@ -29,6 +65,28 @@ namespace WEC
         {
             try
             {
+                string settingsFilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.xml");
+
+                if (!File.Exists(settingsFilePath))
+                {
+                    System.Xml.Linq.XDocument _fileSettings = new System.Xml.Linq.XDocument(
+                        new System.Xml.Linq.XElement("config.xml",
+                        new System.Xml.Linq.XElement("Setting", new System.Xml.Linq.XElement("Repository", "http://simpleweb.exmaru.com")))
+                    );
+
+                    _fileSettings.Save(settingsFilePath);
+                }
+
+                System.Xml.XmlDocument Doc = new System.Xml.XmlDocument();
+                Doc.Load(settingsFilePath);
+                System.Xml.XmlNode element = Doc.DocumentElement.SelectSingleNode("Setting");
+                if (element["Repository"] != null)
+                {
+                    System.Xml.XmlNode node = node = element["Repository"];
+                    repo_site = node.InnerText;
+                }
+
+
                 if (args != null && args.Length > 0)
                 {
                     string command = args[0].Trim();
@@ -140,13 +198,13 @@ namespace WEC
                                 using (var wc = new WebClient())
                                 {
                                     wc.DownloadFile(url, System.IO.Path.Combine(di.FullName, "release.zip"));
-                                    Console.Write("\rDownload Complete.                                                           ");
+                                    Console.WriteLine("Download Complete.                                                           ");
                                     FileInfo fi = new FileInfo(System.IO.Path.Combine(di.FullName, "release.zip"));
                                     if (fi.Exists)
                                     {
-                                        Console.Write("\rUnZip...                                                   ");
+                                        Console.WriteLine("UnZip...                                                   ");
                                         ZipFile.ExtractToDirectory(fi.FullName, di.FullName);
-                                        Console.Write("\rUnzip Complete.                                                       ");
+                                        Console.WriteLine("Unzip Complete.                                                       ");
                                         fi.Delete();
                                     }
                                 }
@@ -210,7 +268,7 @@ namespace WEC
                                         using (var wc = new WebClient())
                                         {
                                             wc.DownloadFile(url, System.IO.Path.Combine(di.FullName, "WebEngine.dll"));
-                                            Console.Write("\rUpdate Complete.                                                           ");
+                                            Console.WriteLine("Update Complete.                                                           ");
                                         }
                                     }
                                     else
@@ -221,7 +279,7 @@ namespace WEC
                             }
                             else
                             {
-                                Console.WriteLine("WEC Update.");
+                                Console.WriteLine("WEC Function Update.");
                                 targetPath = AppDomain.CurrentDomain.BaseDirectory;
                                 DirectoryInfo di = new DirectoryInfo(System.IO.Path.Combine(targetPath, "update"));
                                 if (di.Exists)
@@ -239,21 +297,24 @@ namespace WEC
 
                                 using (var wc = new WebClient())
                                 {
-                                    Console.WriteLine(System.IO.Path.Combine(di.FullName, "wec.zip"));
-                                    wc.DownloadFile(wecURL, System.IO.Path.Combine(di.FullName, "wec.zip"));
-                                    Console.Write("\rDownload Complete.                                                           ");
-                                    FileInfo fi = new FileInfo(System.IO.Path.Combine(di.FullName, "wec.zip"));
+                                    Console.WriteLine("FileDownload...");
+                                    wc.DownloadFile(updater, System.IO.Path.Combine(di.FullName, "function.zip"));
+                                    Console.WriteLine("Download Complete.");
+                                    FileInfo fi = new FileInfo(System.IO.Path.Combine(di.FullName, "function.zip"));
                                     if (fi.Exists)
                                     {
-                                        Console.Write("\rUnZip...                                                   ");
+                                        Console.WriteLine("UnZip...");
                                         ZipFile.ExtractToDirectory(fi.FullName, di.FullName);
                                         fi.Delete();
                                     }
                                 }
 
-                                string filePath = System.IO.Path.Combine(targetPath, "wec-update.bat");
-                                System.IO.File.WriteAllText(filePath, BatchFile(targetPath), Encoding.Default);
-                                Console.Write("\rRun at wec-update.bat.                                                       ");
+                                ProcessXcopy(di.FullName, targetPath);
+                                foreach (FileInfo fi in di.GetFiles())
+                                {
+                                    fi.Delete();
+                                }
+                                di.Delete();
                             }
                         }
                         else if (List.ContainsKey("-V") || List.ContainsKey("-VERSION"))
@@ -449,7 +510,7 @@ namespace WEC
             Console.WriteLine("/?, /Help : You can see instructions on how to use it.");
             Console.WriteLine("");
             Console.WriteLine("-i {install path}, -install {install path}: Install the latest version of WebEngine.");
-            Console.WriteLine("-u, -update: update the latest version of WEC.");
+            Console.WriteLine("-u, -update: update the latest version of WEC-Function Files.");
             Console.WriteLine("-u {install path}, -update {install path}: update the latest version of WebEngine.");
             Console.WriteLine("-v, -version: Display latest version of WebEngine.");
             Console.WriteLine("-v {version}, -version {version} + install or update : Installing with a specific version.");
@@ -458,17 +519,62 @@ namespace WEC
             Console.WriteLine("Welcome WebEngine Helper Command.");
         }
 
-        static string BatchFile(string path)
+
+        static void ExecuteCommand(string command)
         {
-            StringBuilder builder = new StringBuilder(200);
-            builder.AppendLine("@echo off");
-            builder.AppendLine("echo Updating...");
-            builder.AppendLine($"@xcopy {path}update\\*.* {path} /E /C /H /Y /Q /d");
-            builder.AppendLine($"@del {path}update\\*.* /Q");
-            builder.AppendLine($"@rmdir {path}update");
-            builder.AppendLine("echo Update Complete");
-            builder.AppendLine($"@del {path}wec-update.bat /Q");
-            return builder.ToString();
+            int exitCode;
+            ProcessStartInfo processInfo;
+            Process process;
+
+            processInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
+            processInfo.CreateNoWindow = true;
+            processInfo.UseShellExecute = false;
+            // *** Redirect the output ***
+            processInfo.RedirectStandardError = true;
+            processInfo.RedirectStandardOutput = true;
+
+            process = Process.Start(processInfo);
+            process.WaitForExit();
+
+            // *** Read the streams ***
+            // Warning: This approach can lead to deadlocks, see Edit #2
+            string output = process.StandardOutput.ReadToEnd();
+            string error = process.StandardError.ReadToEnd();
+
+            exitCode = process.ExitCode;
+
+            Console.WriteLine("output>>" + (String.IsNullOrEmpty(output) ? "(none)" : output));
+            Console.WriteLine("error>>" + (String.IsNullOrEmpty(error) ? "(none)" : error));
+            Console.WriteLine("ExitCode: " + exitCode.ToString(), "ExecuteCommand");
+            process.Close();
+        }
+
+        private static void ProcessXcopy(string SolutionDirectory, string TargetDirectory)
+        {
+            // Use ProcessStartInfo class
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.CreateNoWindow = false;
+            startInfo.UseShellExecute = false;
+            //Give the name as Xcopy
+            startInfo.FileName = "xcopy";
+            //make the window Hidden
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            //Send the Source and destination as Arguments to the process
+            startInfo.Arguments = "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" + @" /E /C /H /Y /Q /d";
+
+            try
+            {
+                // Start the process with the info we specified.
+                // Call WaitForExit and then the using statement will close.
+                using (Process exeProcess = Process.Start(startInfo))
+                {
+                    exeProcess.WaitForExit();
+                }
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+            }
         }
     }
 }
