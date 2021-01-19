@@ -452,6 +452,56 @@ namespace WEC
                                                 {
                                                     SqlConn.Open();
                                                     cmd.Connection = SqlConn;
+                                                    cmd.CommandType = System.Data.CommandType.Text;
+
+                                                    int rtn = 0;
+                                                    string sqls = "select count(1) from sys.all_objects where [type_desc] = 'USER_TABLE' and [name] = 'Categories'";
+                                                    cmd.CommandText = sqls;
+                                                    rtn = Convert.ToInt32(cmd.ExecuteScalar());
+
+                                                    if (rtn > 0)
+                                                    {
+                                                        Console.WriteLine("Already Database Initialize.");
+                                                    }
+                                                    else
+                                                    {
+                                                        FileInfo fi_sql = new FileInfo(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "WebEngine.Database_Create.sql"));
+                                                        if (fi_sql.Exists)
+                                                        {
+                                                            sqls = File.ReadAllText(fi_sql.FullName);
+                                                            if (!string.IsNullOrWhiteSpace(sqls))
+                                                            {
+
+                                                                foreach (string sql in sqls.Split('/'))
+                                                                {
+                                                                    if (!string.IsNullOrWhiteSpace(sql))
+                                                                    {
+                                                                        cmd.CommandText = sql;
+                                                                        cmd.ExecuteNonQuery();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            fi_sql = new FileInfo(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "WebEngine.Database_Deploy.sql"));
+                                                            if (fi_sql.Exists)
+                                                            {
+                                                                sqls = File.ReadAllText(fi_sql.FullName);
+                                                                if (!string.IsNullOrWhiteSpace(sqls))
+                                                                {
+                                                                    cmd.CommandType = System.Data.CommandType.Text;
+                                                                    cmd.CommandText = sqls;
+                                                                    cmd.ExecuteNonQuery();
+                                                                }
+                                                            }
+
+                                                            Console.WriteLine("Database Initialize Complete.");
+                                                        }
+                                                        else
+                                                        {
+                                                            throw new Exception("SQL is not found.");
+                                                        }
+                                                    }
+
                                                     SqlConn.Close();
                                                 }
                                             }
