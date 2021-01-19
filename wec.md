@@ -12,7 +12,7 @@ Open Source WebSite for SimpleWeb.Net are a collection of open source components
     - [Wec Update](#wec-update)
     - [Wec Module](#wec-module)
  - [SimpleWeb](#simpleweb)
-    - [a relative link](https://github.com/Exmaru/SimpleWeb/blob/main/README.md)
+    - [SimpleWeb Guide](https://github.com/Exmaru/SimpleWeb/blob/main/README.md)
 
 ---
 
