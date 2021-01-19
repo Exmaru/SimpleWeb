@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Xml;
 
 namespace WEC_Module
 {
@@ -15,7 +17,7 @@ namespace WEC_Module
         {
             get
             {
-                return $"{repo_site}/Module/Download";
+                return $"{repo_site}/Content/Download";
             }
         }
 
@@ -126,8 +128,12 @@ namespace WEC_Module
                                 }
                                 else
                                 {
-                                    targetVersion = string.Empty;
+                                    targetVersion = "latest";
                                 }
+                            }
+                            else
+                            {
+                                targetVersion = "latest";
                             }
 
                             if (IsProc && (List.ContainsKey("-P") || List.ContainsKey("-POSITION")))
@@ -149,38 +155,106 @@ namespace WEC_Module
 
                             if (IsProc)
                             {
-                                Console.Write("Downloading... Hold on a moment, please.");
-                                DirectoryInfo di = new DirectoryInfo(System.IO.Path.Combine(targetPath,"temp"));
-                                if (!di.Exists)
+                                Console.WriteLine("Downloading... Hold on a moment, please.");
+                                DirectoryInfo di = new DirectoryInfo(System.IO.Path.Combine(targetPath, targetModule));
+                                if (di.Exists)
+                                {
+                                    foreach(FileInfo dfi in di.GetFiles())
+                                    {
+                                        dfi.Delete();
+                                    }
+                                }
+                                else
                                 {
                                     di.Create();
                                 }
 
                                 using (var wc = new WebClient())
                                 {
-                                    downloadURL = $"{DownloadURL}/module={targetModule}&v={targetVersion}";
-
-                                    wc.DownloadFile(DownloadURL, System.IO.Path.Combine(di.FullName, $"{targetModule}.zip"));
-                                    Console.WriteLine("Download Complete.                                                           ");
+                                    downloadURL = $"{DownloadURL}/{targetModule}/{targetVersion}.zip";
+                                    Console.WriteLine(downloadURL);
+                                    wc.DownloadFile(downloadURL, System.IO.Path.Combine(di.FullName, $"{targetModule}.zip"));
+                                    Console.WriteLine("Download Complete.");
                                     FileInfo fi = new FileInfo(System.IO.Path.Combine(di.FullName, $"{targetModule}.zip"));
                                     if (fi.Exists)
                                     {
-                                        Console.WriteLine("UnZip...                                                   ");
+                                        Console.WriteLine("UnZip...");
                                         ZipFile.ExtractToDirectory(fi.FullName, di.FullName);
-                                        Console.WriteLine("Unzip Complete.                                                       ");
+                                        Console.WriteLine("Unzip Complete.");
                                         fi.Delete();
+                                    }
+                                    fi = new FileInfo(System.IO.Path.Combine(di.FullName, $"init.sql"));
+                                    if (fi.Exists)
+                                    {
+                                        string conn = ConnectionString(targetPath);
+                                        if (!string.IsNullOrWhiteSpace(conn))
+                                        {
+                                            try
+                                            {
+                                                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(conn);
+                                                builder.ConnectTimeout = 3;
+                                                Console.WriteLine($"Try Connection Database : {builder.DataSource}");
+                                                using (SqlConnection SqlConn = new SqlConnection(builder.ConnectionString))
+                                                using (SqlCommand cmd = new SqlCommand())
+                                                {
+                                                    SqlConn.Open();
+                                                    cmd.Connection = SqlConn;
+                                                    cmd.CommandType = System.Data.CommandType.Text;
+
+                                                    int rtn = 0;
+                                                    string sqls = "select count(1) from sys.all_objects where [type_desc] = 'USER_TABLE' and [name] = 'Categories'";
+                                                    cmd.CommandText = sqls;
+                                                    rtn = Convert.ToInt32(cmd.ExecuteScalar());
+
+                                                    if (rtn > 0)
+                                                    {
+                                                        sqls = "select count(1) from sys.all_objects where [type_desc] = 'USER_TABLE' and [name] = 'BoardMasters'";
+                                                        cmd.CommandText = sqls;
+                                                        rtn = Convert.ToInt32(cmd.ExecuteScalar());
+
+                                                        if (rtn > 0)
+                                                        {
+                                                            Console.WriteLine("Already Database Initialize.");
+                                                        }
+                                                        else
+                                                        {
+                                                            sqls = File.ReadAllText(fi.FullName);
+                                                            if (!string.IsNullOrWhiteSpace(sqls))
+                                                            {
+
+                                                                foreach (string sql in sqls.Split('/'))
+                                                                {
+                                                                    if (!string.IsNullOrWhiteSpace(sql))
+                                                                    {
+                                                                        cmd.CommandText = sql;
+                                                                        cmd.ExecuteNonQuery();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            Console.WriteLine("Database Initialize Complete.");
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        Console.WriteLine("The default database must be set first.");
+                                                    }
+
+                                                    SqlConn.Close();
+                                                }
+                                            }
+                                            catch (SqlException sqlex)
+                                            {
+                                                Console.WriteLine(sqlex.Message);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Console.WriteLine(ex.Message);
+                                            }
+                                        }
                                     }
                                 }
                                 Console.WriteLine("");
-
-                                ProcessXcopy(di.FullName, System.IO.Path.Combine(targetPath, targetModule));
-
-                                foreach(FileInfo fi in di.GetFiles())
-                                {
-                                    fi.Delete();
-                                }
-                                di.Delete();
-
                                 Console.WriteLine($"Install Complete : {targetModule} {targetVersion}");
                             }
                         }
@@ -239,38 +313,36 @@ namespace WEC_Module
                                     DirectoryInfo di = new DirectoryInfo(targetPath);
                                     if (di.Exists)
                                     {
-                                        di = new DirectoryInfo(System.IO.Path.Combine(targetPath, "temp"));
-                                        if (!di.Exists)
+                                        di = new DirectoryInfo(System.IO.Path.Combine(targetPath, targetModule));
+                                        if (di.Exists)
+                                        {
+                                            foreach (FileInfo dfi in di.GetFiles())
+                                            {
+                                                dfi.Delete();
+                                            }
+                                        }
+                                        else
                                         {
                                             di.Create();
                                         }
 
                                         using (var wc = new WebClient())
                                         {
-                                            downloadURL = $"{DownloadURL}/module={targetModule}&v={targetVersion}";
+                                            downloadURL = $"{DownloadURL}/{targetModule}/{targetVersion}.zip";
 
-                                            wc.DownloadFile(DownloadURL, System.IO.Path.Combine(di.FullName, $"{targetModule}.zip"));
-                                            Console.WriteLine("Download Complete.                                                           ");
+                                            wc.DownloadFile(downloadURL, System.IO.Path.Combine(di.FullName, $"{targetModule}.zip"));
+                                            Console.WriteLine("Download Complete.");
                                             FileInfo fi = new FileInfo(System.IO.Path.Combine(di.FullName, $"{targetModule}.zip"));
                                             if (fi.Exists)
                                             {
-                                                Console.WriteLine("UnZip...                                                   ");
-                                                ZipFile.ExtractToDirectory(fi.FullName, targetPath);
-                                                Console.WriteLine("Unzip Complete.                                                       ");
+                                                Console.WriteLine("UnZip...");
+                                                ZipFile.ExtractToDirectory(fi.FullName, di.FullName);
+                                                Console.WriteLine("Unzip Complete.");
                                                 fi.Delete();
                                             }
                                         }
 
                                         Console.WriteLine("");
-
-                                        ProcessXcopy(di.FullName, System.IO.Path.Combine(targetPath, targetModule));
-
-                                        foreach (FileInfo fi in di.GetFiles())
-                                        {
-                                            fi.Delete();
-                                        }
-                                        di.Delete();
-
                                         Console.WriteLine($"Update Complete : {targetModule} {targetVersion}");
                                     }
                                     else
@@ -429,6 +501,56 @@ namespace WEC_Module
                 Console.WriteLine(exp.Message);
             }
         }
+
+        private static string ConnectionString(string path)
+        {
+            string result = string.Empty;
+
+            DirectoryInfo di = new DirectoryInfo(path);
+            if (!di.Exists)
+            {
+                throw new Exception($"Not found path : {path}");
+            }
+            FileInfo fi = new FileInfo(System.IO.Path.Combine(di.FullName, "web.config"));
+            if (fi.Exists)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(fi.FullName);
+                XmlNodeList elements = doc.ChildNodes;
+                XmlNodeList connectionStrings = elements.Item(1).SelectNodes("connectionStrings").Item(0).SelectNodes("add");
+
+                string firstKey = string.Empty;
+                int num = 0;
+
+                foreach (XmlNode node in connectionStrings)
+                {
+                    if (num == 0) firstKey = node.Attributes["name"].Value;
+                    Connections.AddOrUpdate(node.Attributes["name"].Value, node.Attributes["connectionString"].Value, (oldkey, oldValue) => node.Attributes["connectionString"].Value);
+                    num++;
+                }
+
+                
+
+                if (Connections != null && Connections.Count > 0)
+                {
+                    if (Connections.ContainsKey("DBConn"))
+                    {
+                        if (Connections.TryGetValue("DBConn", out result))
+                        {
+                        }
+                    }
+                    else
+                    {
+                        if (Connections.TryGetValue(firstKey, out result))
+                        {
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
     }
 
 }

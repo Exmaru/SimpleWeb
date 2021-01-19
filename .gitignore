@@ -19,3 +19,6 @@
 /WEC-Update/bin/Debug
 /WEC-Update/obj/Debug
 /WebEngine.Database/WebEngine.Database.refactorlog
+/Module.Board/bin/Debug
+/Module.Board/obj/Debug
+*.refactorlog

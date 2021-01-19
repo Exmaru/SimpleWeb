@@ -15,6 +15,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "WebEngine.Database", "WebEn
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{C9117056-B2EE-4183-8B50-48ACDAAD7C22}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Module.Board", "Module.Board\Module.Board.sqlproj", "{99B422BF-F82F-4B7B-9B92-C87111CBCA1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,12 +45,19 @@ Global
 		{85950CA6-653D-4C8A-BCD7-F3EBED3D64B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85950CA6-653D-4C8A-BCD7-F3EBED3D64B0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{85950CA6-653D-4C8A-BCD7-F3EBED3D64B0}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{99B422BF-F82F-4B7B-9B92-C87111CBCA1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99B422BF-F82F-4B7B-9B92-C87111CBCA1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99B422BF-F82F-4B7B-9B92-C87111CBCA1C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{99B422BF-F82F-4B7B-9B92-C87111CBCA1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99B422BF-F82F-4B7B-9B92-C87111CBCA1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99B422BF-F82F-4B7B-9B92-C87111CBCA1C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{85950CA6-653D-4C8A-BCD7-F3EBED3D64B0} = {C9117056-B2EE-4183-8B50-48ACDAAD7C22}
+		{99B422BF-F82F-4B7B-9B92-C87111CBCA1C} = {C9117056-B2EE-4183-8B50-48ACDAAD7C22}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF09A6F0-FB7C-4B68-85DB-66FE86D353EC}
