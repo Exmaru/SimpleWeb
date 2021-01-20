@@ -48,7 +48,7 @@ namespace WEC_Update
                 System.Xml.XmlNode element = Doc.DocumentElement.SelectSingleNode("Setting");
                 if (element["Repository"] != null)
                 {
-                    System.Xml.XmlNode node = node = element["Repository"];
+                    System.Xml.XmlNode node = element["Repository"];
                     repo_site = node.InnerText;
                 }
 

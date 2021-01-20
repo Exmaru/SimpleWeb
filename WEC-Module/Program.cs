@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
@@ -46,7 +47,7 @@ namespace WEC_Module
                 System.Xml.XmlNode element = Doc.DocumentElement.SelectSingleNode("Setting");
                 if (element["Repository"] != null)
                 {
-                    System.Xml.XmlNode node = node = element["Repository"];
+                    System.Xml.XmlNode node = element["Repository"];
                     repo_site = node.InnerText;
                 }
 
@@ -396,9 +397,95 @@ namespace WEC_Module
                                         di = new DirectoryInfo(System.IO.Path.Combine(targetPath, targetModule));
                                         if (di.Exists)
                                         {
-                                            foreach(FileInfo fi in di.GetFiles())
+                                            FileInfo fi = new FileInfo(System.IO.Path.Combine(di.FullName, $"{targetModule}.xml"));
+                                            if (fi.Exists)
                                             {
-                                                fi.Delete();
+                                                string conn = ConnectionString(targetPath);
+                                                if (!string.IsNullOrWhiteSpace(conn))
+                                                {
+                                                    try
+                                                    {
+                                                        SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(conn);
+                                                        builder.ConnectTimeout = 3;
+                                                        Console.WriteLine($"Try Connection Database : {builder.DataSource} {builder.InitialCatalog}");
+                                                        using (SqlConnection SqlConn = new SqlConnection(builder.ConnectionString))
+                                                        using (SqlCommand cmd = new SqlCommand())
+                                                        {
+                                                            SqlConn.Open();
+                                                            cmd.Connection = SqlConn;
+                                                            cmd.CommandType = System.Data.CommandType.Text;
+
+                                                            int rtn = 0;
+                                                            string sqls = "select count(1) from sys.all_objects where [type_desc] = 'USER_TABLE' and [name] = 'Categories'";
+                                                            cmd.CommandText = sqls;
+                                                            rtn = Convert.ToInt32(cmd.ExecuteScalar());
+
+                                                            if (rtn > 0)
+                                                            {
+                                                                sqls = $"select count(1) from sys.all_objects where [type_desc] = 'USER_TABLE' and [name] Like '{targetModule}%'";
+                                                                cmd.CommandText = sqls;
+                                                                rtn = Convert.ToInt32(cmd.ExecuteScalar());
+
+                                                                if (rtn > 0)
+                                                                {
+                                                                    foreach (string spName in ReadConfigXml(fi.FullName, "Database", "Procedure"))
+                                                                    {
+                                                                        if (!string.IsNullOrWhiteSpace(spName))
+                                                                        {
+                                                                            cmd.CommandText = $"if exists(select 1 from sys.all_objects where [type_desc] = 'SQL_STORED_PROCEDURE' and [name] = '{spName}') begin drop PROCEDURE [{spName}] end";
+                                                                            cmd.ExecuteNonQuery();
+                                                                        }
+                                                                    }
+
+                                                                    foreach (string viewName in ReadConfigXml(fi.FullName, "Database", "View"))
+                                                                    {
+                                                                        if (!string.IsNullOrWhiteSpace(viewName))
+                                                                        {
+                                                                            cmd.CommandText = $"if exists(select 1 from sys.all_objects where [type_desc] = 'VIEW' and [name] = '{viewName}') begin drop VIEW  [{viewName}] end";
+                                                                            cmd.ExecuteNonQuery();
+                                                                        }
+                                                                    }
+
+                                                                    foreach (string tableName in ReadConfigXml(fi.FullName, "Database", "Table"))
+                                                                    {
+                                                                        if (!string.IsNullOrWhiteSpace(tableName))
+                                                                        {
+                                                                            cmd.CommandText = $"if exists(select 1 from sys.all_objects where [type_desc] = 'USER_TABLE' and [name] = '{tableName}') begin drop table [{tableName}] end";
+                                                                            cmd.ExecuteNonQuery();
+                                                                        }
+                                                                    }
+
+                                                                    Console.WriteLine("Database Remove Complete.");
+                                                                }
+                                                                else
+                                                                {
+                                                                    Console.WriteLine("Not Found Database Objects.");
+
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                Console.WriteLine("The default database must be set first.");
+                                                            }
+
+                                                            SqlConn.Close();
+                                                        }
+                                                    }
+                                                    catch (SqlException sqlex)
+                                                    {
+                                                        Console.WriteLine(sqlex.Message);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        Console.WriteLine(ex.Message);
+                                                    }
+                                                }
+
+                                            }
+
+                                            foreach(FileInfo dfi in di.GetFiles())
+                                            {
+                                                dfi.Delete();
                                             }
                                             di.Delete();
                                         }
@@ -545,6 +632,29 @@ namespace WEC_Module
                         if (Connections.TryGetValue(firstKey, out result))
                         {
                         }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private static List<string> ReadConfigXml(string path, string section, string targetNode)
+        {
+            List<string> result = new List<string>();
+
+            FileInfo fi = new FileInfo(path);
+            if (fi.Exists)
+            {
+                System.Xml.XmlDocument Doc = new System.Xml.XmlDocument();
+                Doc.Load(fi.FullName);
+                System.Xml.XmlNode element = Doc.DocumentElement.SelectSingleNode(section);
+                if (element[targetNode] != null)
+                {
+                    System.Xml.XmlNodeList nodes = element.SelectNodes(targetNode);
+                    foreach(XmlNode item in nodes)
+                    {
+                        result.Add(item.InnerText);
                     }
                 }
             }
