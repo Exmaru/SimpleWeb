@@ -1,7 +1,7 @@
 ﻿CREATE VIEW [dbo].[V_Boards]
 AS
 Select
-A.*,B.MemberID,B.Email
+A.*,B.MemberID,B.Email,B.[ViewName]
 ,B.ExtraColumn01 as MemberColumn01
 ,B.ExtraColumn02 as MemberColumn02
 ,B.ExtraColumn03 as MemberColumn03

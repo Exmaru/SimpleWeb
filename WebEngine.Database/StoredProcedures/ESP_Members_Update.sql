@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[ESP_Members_Update]
 (
     @MemberSeq bigint
+    ,@ViewName NVARCHAR(50)
     ,@MemberType NVARCHAR(50)
     ,@IDType NVARCHAR(50)
     ,@MemberStatus NVARCHAR(50)
@@ -61,6 +62,7 @@ IF Exists(select MemberSeq from Members where MemberSeq = @MemberSeq)
 
         Update Members Set
         MemberType = @MemberType
+        ,ViewName = @ViewName
         ,SubMemberType = @SubMemberType
         ,IDType = @IDType
         ,Email = @Email

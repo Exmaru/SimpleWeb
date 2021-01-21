@@ -79,6 +79,10 @@ namespace WebEngine
 			{
 				this.Cmd.AddParameterInput(Name, SqlDbType.NVarChar, obj, size);
 			}
+			else if (type.Equals("bool", StringComparison.OrdinalIgnoreCase) || type.Equals("boolean", StringComparison.OrdinalIgnoreCase) || type.Equals("bit", StringComparison.OrdinalIgnoreCase))
+			{
+				this.Cmd.AddParameterInput(Name, SqlDbType.Bit, obj, 1);
+			}
 			else
             {
 				this.Cmd.AddParameterInput(Name, SqlDbType.Variant, obj, size);
@@ -119,6 +123,10 @@ namespace WebEngine
 			{
 				this.Cmd.AddParameterOutput(Name, SqlDbType.NVarChar, size);
 			}
+			else if (type.Equals("bool", StringComparison.OrdinalIgnoreCase) || type.Equals("boolean", StringComparison.OrdinalIgnoreCase) || type.Equals("bit", StringComparison.OrdinalIgnoreCase))
+			{
+				this.Cmd.AddParameterOutput(Name, SqlDbType.Bit, 1);
+			}
 			else
 			{
 				this.Cmd.AddParameterOutput(Name, SqlDbType.Variant, size);
@@ -145,6 +153,11 @@ namespace WebEngine
 			return this.Cmd.ExecuteScalar();
 		}
 
+		public virtual int ExecuteNonQuery()
+		{
+			return this.Cmd.ExecuteNonQuery();
+		}
+
 
 		public virtual int ExecuteCount()
 		{
@@ -154,6 +167,19 @@ namespace WebEngine
 
 			return result;
 		}
+
+		public ReturnValue ExecuteReturnValue()
+        {
+			ReturnValue result = new ReturnValue();
+			var rtn = this.Cmd.ExecuteReturnValue();
+			result.Check = rtn.Check;
+			result.Code = rtn.Code;
+			result.Value = rtn.Value;
+			result.Message = rtn.Message;
+
+			return result;
+        }
+
 
 		public DbResult ExecuteDbResult()
 		{

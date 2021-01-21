@@ -3,6 +3,7 @@
 	[MemberSeq] BIGINT NOT NULL PRIMARY KEY IDENTITY, 
     [MemberID] VARCHAR(255) NOT NULL, 
     [Password] NVARCHAR(512) NOT NULL,
+    [ViewName] NVARCHAR(50) NOT NULL,
     [MemberType] NVARCHAR(50) NOT NULL, 
     [SubMemberType] NVARCHAR(50) NULL, 
     [IDType] NVARCHAR(50) NOT NULL, 

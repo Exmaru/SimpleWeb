@@ -15,6 +15,21 @@ namespace WebEngine
 
         }
 
+        public bool IsCheck
+        {
+            get
+            {
+                if (this.List != null || this.List.Count > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         public DataTable Data
         {
             get
@@ -79,6 +94,21 @@ namespace WebEngine
         {
         }
 
+        public bool IsCheck
+        {
+            get
+            {
+                if (this.row != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         public DbRow(DataRow _row)
         {
             this.row = _row;
@@ -100,73 +130,131 @@ namespace WebEngine
             }
         }
 
-        public virtual string GetString(string name)
+        public virtual string GetString(string name, string defaultValue = "")
         {
-            return Convert.ToString(this.Get[name]);
+            return (IsCheck) ? Convert.ToString(this.Get[name]) : defaultValue;
         }
 
-        public virtual int GetInt(string name)
+        public virtual int GetInt(string name, int defaultValue = -1)
         {
             int result = -1;
-            if (int.TryParse(this.GetString(name), out result))
+            if (IsCheck)
             {
-                return result;
+                if (int.TryParse(this.GetString(name), out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return defaultValue;
+                }
             }
             else
             {
-                return -1;
+                return defaultValue;
             }
         }
 
-        public virtual long GetLong(string name)
+        public virtual long GetLong(string name, long defaultValue = -1)
         {
             long result = -1;
-            if (long.TryParse(this.GetString(name), out result))
+            if (IsCheck)
             {
-                return result;
+                if (long.TryParse(this.GetString(name), out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return defaultValue;
+                }
             }
             else
             {
-                return -1;
+                return defaultValue;
             }
         }
 
-        public virtual float GetFloat(string name)
+        public virtual float GetFloat(string name, float defaultValue = 0)
         {
             float result = -1;
-            if (float.TryParse(this.GetString(name), out result))
+            if (IsCheck)
             {
-                return result;
+                if (float.TryParse(this.GetString(name), out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return defaultValue;
+                }
             }
             else
             {
-                return -1;
+                return defaultValue;
             }
         }
 
-        public virtual bool GetBoolean(string name)
+        public virtual bool GetBoolean(string name, bool defaultValue = false)
         {
             bool result = default(bool);
-            if (bool.TryParse(this.GetString(name), out result))
+
+            if (IsCheck)
             {
-                return result;
+                if (bool.TryParse(this.GetString(name), out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return defaultValue;
+                }
             }
             else
             {
-                return false;
+                return defaultValue;
             }
         }
 
         public virtual DateTime GetDateTime(string name)
         {
             DateTime result = default(DateTime);
-            if (DateTime.TryParse(this.GetString(name), out result))
+
+            if (IsCheck)
             {
-                return result;
+                if (DateTime.TryParse(this.GetString(name), out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return new DateTime();
+                }
             }
             else
             {
                 return new DateTime();
+            }
+        }
+
+        public virtual DateTime GetDateTime(string name, DateTime defaultValue)
+        {
+            DateTime result = default(DateTime);
+
+            if (IsCheck)
+            {
+                if (DateTime.TryParse(this.GetString(name), out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return defaultValue;
+                }
+            }
+            else
+            {
+                return defaultValue;
             }
         }
     }

@@ -7,6 +7,7 @@
     ,@Password              nvarchar(30)        = null
     ,@Answer                nvarchar(max)       = null
     ,@BoardStatus           nvarchar(50)        = null
+    ,@IsShow                bit                 = 1
     ,@ExtraColumn01         NVARCHAR(50)        = null
     ,@ExtraColumn02         NVARCHAR(50)        = null
     ,@ExtraColumn03         NVARCHAR(50)        = null
@@ -79,6 +80,7 @@ IF @BoardSeq > 0 and Exists(select BoardSeq from Boards where BoardSeq = @BoardS
                 ,Content = @Content
                 ,LastUpdate = getdate()
                 ,BoardStatus = @BoardStatus
+                ,IsShow = @IsShow
                 ,ExtraColumn01 = @ExtraColumn01
                 ,ExtraColumn02 = @ExtraColumn02
                 ,ExtraColumn03 = @ExtraColumn03
@@ -128,14 +130,14 @@ IF @BoardSeq > 0 and Exists(select BoardSeq from Boards where BoardSeq = @BoardS
 	END
 ELSE
     BEGIN
-        Insert into Boards (Title,Content,BmSeq,MemberSeq,[Password],ParentBoardSeq,Answer,AnswerDate,BoardStatus
+        Insert into Boards (Title,Content,BmSeq,MemberSeq,[Password],ParentBoardSeq,Answer,AnswerDate,BoardStatus,IsShow
         ,ExtraColumn01,ExtraColumn02,ExtraColumn03,ExtraColumn04,ExtraColumn05
         ,ExtraColumn06,ExtraColumn07,ExtraColumn08,ExtraColumn09,ExtraColumn10
         ,ExtraColumn11,ExtraColumn12,ExtraColumn13,ExtraColumn14,ExtraColumn15
         ,ExtraColumn16,ExtraColumn17,ExtraColumn18,ExtraColumn19,ExtraColumn20
         ,ExtraColumn21,ExtraColumn22,ExtraColumn23,ExtraColumn24,ExtraColumn25
         ,ExtraColumn26,ExtraColumn27,ExtraColumn28,ExtraColumn29,ExtraColumn30)
-        values (@Title,@Content,@BmSeq,@MemberSeq,@Password,@ParentBoardSeq,@Answer,getdate(),@BoardStatus
+        values (@Title,@Content,@BmSeq,@MemberSeq,@Password,@ParentBoardSeq,@Answer,getdate(),@BoardStatus,@IsShow
         ,@ExtraColumn01,@ExtraColumn02,@ExtraColumn03,@ExtraColumn04,@ExtraColumn05
         ,@ExtraColumn06,@ExtraColumn07,@ExtraColumn08,@ExtraColumn09,@ExtraColumn10
         ,@ExtraColumn11,@ExtraColumn12,@ExtraColumn13,@ExtraColumn14,@ExtraColumn15

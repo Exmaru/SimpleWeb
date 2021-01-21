@@ -26,13 +26,31 @@ namespace WebEngine
             Repository result = null;
             if (!string.IsNullOrWhiteSpace(this.ConnectionName))
             {
-                result = new Repository(this.ConnectionName, query);
+                result = new Repository(this.ConnectionName, query, System.Data.CommandType.Text);
                 this.Repositories.AddOrUpdate(query, result, (oldkey, oldvalue) => result);
             }
             else
             {
-                result = new Repository(query);
+                result = new Repository(query, System.Data.CommandType.Text);
                 this.Repositories.AddOrUpdate(query, result, (oldkey, oldvalue) => result);
+            }
+
+            return result;
+
+        }
+
+        public Repository ExecuteSP(string spName)
+        {
+            Repository result = null;
+            if (!string.IsNullOrWhiteSpace(this.ConnectionName))
+            {
+                result = new Repository(this.ConnectionName, spName, System.Data.CommandType.StoredProcedure);
+                this.Repositories.AddOrUpdate(spName, result, (oldkey, oldvalue) => result);
+            }
+            else
+            {
+                result = new Repository(spName, System.Data.CommandType.StoredProcedure);
+                this.Repositories.AddOrUpdate(spName, result, (oldkey, oldvalue) => result);
             }
 
             return result;

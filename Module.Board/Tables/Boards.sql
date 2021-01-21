@@ -4,7 +4,7 @@
     [BmSeq] BIGINT NOT NULL,
     [Title] NVARCHAR(100) NOT NULL, 
     [Content] NVARCHAR(MAX) NOT NULL, 
-    [Answer] NVARCHAR(MAX) NOT NULL, 
+    [Answer] NVARCHAR(MAX) NULL, 
     [AnswerDate] datetime2 NOT NULL DEFAULT getdate(),
     [BoardStatus] nvarchar(50) NULL,
     [ReadCount] INT NOT NULL DEFAULT 0, 
@@ -48,5 +48,6 @@
     [ExtraColumn28] NVARCHAR(250) NULL, 
     [ExtraColumn29] NVARCHAR(250) NULL, 
     [ExtraColumn30] NVARCHAR(250) NULL, 
-    [IsEnabled] bit DEFAULT 1 NOT NULL
+    [IsEnabled] bit DEFAULT 1 NOT NULL, 
+    [IsShow] BIT NOT NULL DEFAULT 1
 )

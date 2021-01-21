@@ -8,6 +8,7 @@ namespace WebEngine
 
         private static readonly Lazy<GlobalUtility> lazy = new Lazy<GlobalUtility>(() => new GlobalUtility());
         public static GlobalUtility Utility { get { return lazy.Value; } }
+
     }
 
     public static class GlobalExtension

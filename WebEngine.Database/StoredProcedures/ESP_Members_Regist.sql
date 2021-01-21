@@ -2,6 +2,7 @@
 (
     @MemberID VARCHAR(255)
     ,@Password NVARCHAR(512)
+    ,@ViewName NVARCHAR(50)
     ,@MemberType NVARCHAR(50)
     ,@IDType NVARCHAR(50)
     ,@MemberStatus NVARCHAR(50)
@@ -65,7 +66,7 @@ IF Exists(select MemberSeq from Members where MemberID = @MemberID)
 ELSE
     BEGIN
         Insert into Members (
-        MemberID,[Password],MemberType,SubMemberType,IDType,Email,RegistDate,LastUpdate,LastLogin,MemberStatus,IsCrypto,IsEnabled
+        MemberID,[Password],MemberType,SubMemberType,IDType,Email,RegistDate,LastUpdate,LastLogin,MemberStatus,IsCrypto,IsEnabled,ViewName
         ,ExtraColumn01,ExtraColumn02,ExtraColumn03,ExtraColumn04,ExtraColumn05
         ,ExtraColumn06,ExtraColumn07,ExtraColumn08,ExtraColumn09,ExtraColumn10
         ,ExtraColumn11,ExtraColumn12,ExtraColumn13,ExtraColumn14,ExtraColumn15
@@ -73,7 +74,7 @@ ELSE
         ,ExtraColumn21,ExtraColumn22,ExtraColumn23,ExtraColumn24,ExtraColumn25
         ,ExtraColumn26,ExtraColumn27,ExtraColumn28,ExtraColumn29,ExtraColumn30
         ) values (
-        @MemberID,@Password,@MemberType,@SubMemberType,@IDType,@Email,getdate(),getdate(),getdate(),@MemberStatus,@IsCrypto,1
+        @MemberID,@Password,@MemberType,@SubMemberType,@IDType,@Email,getdate(),getdate(),getdate(),@MemberStatus,@IsCrypto,1,@ViewName
         ,@ExtraColumn01,@ExtraColumn02,@ExtraColumn03,@ExtraColumn04,@ExtraColumn05
         ,@ExtraColumn06,@ExtraColumn07,@ExtraColumn08,@ExtraColumn09,@ExtraColumn10
         ,@ExtraColumn11,@ExtraColumn12,@ExtraColumn13,@ExtraColumn14,@ExtraColumn15

@@ -43,6 +43,8 @@ namespace WebEngine
             }
         }
 
+        public static string AppID { get; set; } = string.Empty;
+
         public static bool IsCompress { get; set; } = false;
 
         public static bool IsBundle { get; set; } = false;
@@ -181,6 +183,7 @@ namespace WebEngine
                 }
             }
 
+            AppID = SimpleConfig.Global.GetString("AppID");
             IsCompress = SimpleConfig.Global.GetBoolean("IsCompress");
             IsBundle = SimpleConfig.Global.GetBoolean("IsBundle");
             Version = SimpleConfig.Global.GetString("Version");

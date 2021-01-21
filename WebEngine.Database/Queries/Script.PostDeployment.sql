@@ -5,8 +5,8 @@ BEGIN TRAN
 BEGIN TRY
 	IF NOT Exists(Select EmSeq From ExtraMasters where TableName = 'Members')
 		BEGIN
-			Insert into ExtraMasters (TableName,IsEnabled,ExtraColumn01,ExtraColumn02,ExtraColumn03,ExtraColumn04,ExtraColumn05,ExtraColumn06,ExtraColumn07) 
-			values ('Members',1,'이름','별명','성별','생년월일','주소지','상세주소','가입경로')
+			Insert into ExtraMasters (TableName,IsEnabled,ExtraColumn01,ExtraColumn02,ExtraColumn03,ExtraColumn04,ExtraColumn05,ExtraColumn06) 
+			values ('Members',1,'별명','성별','생년월일','주소지','상세주소','가입경로')
 
 			SET @Err = @Err + @@Error
 		END

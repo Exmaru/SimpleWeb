@@ -130,6 +130,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ExtendHtmlHelper.cs" />
     <Compile Include="Helpers\UploadHelper.cs" />
     <Compile Include="Models\AppData.cs" />
     <Compile Include="Models\AuthException.cs" />
@@ -138,9 +139,11 @@
     <Compile Include="Models\GlobalUtility.cs" />
     <Compile Include="Models\Logger.cs" />
     <Compile Include="Helpers\DbHelper.cs" />
+    <Compile Include="Models\Parameters\PagingParameter.cs" />
     <Compile Include="Models\ReturnValue.cs" />
     <Compile Include="Models\ReturnValues.cs" />
     <Compile Include="Models\SimpleConfig.cs" />
+    <Compile Include="Models\WhereString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
