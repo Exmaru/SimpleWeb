@@ -21,6 +21,11 @@ namespace WebEngine
 			this.Open(Global.Connection(connName));
 		}
 
+		public Repository(SqlConnection sqlconn) : base()
+        {
+			this.Set(sqlconn);
+        }
+
 		public Repository(string query, CommandType type = CommandType.Text) : base()
         {
             this.Open(Global.ConnectionString);
@@ -32,6 +37,14 @@ namespace WebEngine
 		public Repository(string connName, string query, CommandType type = CommandType.Text) : base()
 		{
 			this.Open(Global.Connection(connName));
+			this.Query = query;
+			this.Cmd = new SqlCommand(this.Query, this.SqlConn);
+			this.Cmd.CommandType = type;
+		}
+
+		public Repository(SqlConnection conn, string query, CommandType type = CommandType.Text) : base()
+		{
+			this.Set(conn);
 			this.Query = query;
 			this.Cmd = new SqlCommand(this.Query, this.SqlConn);
 			this.Cmd.CommandType = type;

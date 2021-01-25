@@ -22,6 +22,11 @@ namespace WebEngine
 
 		public SqlConnection Connection { get { return this.SqlConn; } set { this.SqlConn = value; } }
 
+		public virtual void Set(SqlConnection sqlconn)
+        {
+			this.SqlConn = sqlconn;
+        }
+
 		public void Open(string connStr)
 		{
 			this.SqlConn = new SqlConnection(connStr);

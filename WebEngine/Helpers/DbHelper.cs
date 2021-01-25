@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Data.SqlClient;
 
 namespace WebEngine
 {
@@ -8,6 +9,8 @@ namespace WebEngine
 
         protected string ConnectionName { get; set; } = string.Empty;
 
+        protected SqlConnection SqlConn { get; set; }
+
         public DbHelper() : this("DBConn")
         {
         }
@@ -15,6 +18,8 @@ namespace WebEngine
         public DbHelper(string connName)
         {
             this.ConnectionName = connName;
+            this.SqlConn = new SqlConnection(Global.Connection(connName));
+            this.SqlConn.Open();
         }
 
 
@@ -24,7 +29,7 @@ namespace WebEngine
             Repository result = null;
             if (!string.IsNullOrWhiteSpace(this.ConnectionName))
             {
-                result = new Repository(this.ConnectionName, query, System.Data.CommandType.Text);
+                result = new Repository(this.SqlConn, query, System.Data.CommandType.Text);
             }
             else
             {
@@ -40,7 +45,7 @@ namespace WebEngine
             Repository result = null;
             if (!string.IsNullOrWhiteSpace(this.ConnectionName))
             {
-                result = new Repository(this.ConnectionName, spName, System.Data.CommandType.StoredProcedure);
+                result = new Repository(this.SqlConn, spName, System.Data.CommandType.StoredProcedure);
             }
             else
             {
@@ -54,6 +59,15 @@ namespace WebEngine
 
         public void Dispose()
         {
+            if (this.SqlConn != null)
+            {
+                if (this.SqlConn.State == System.Data.ConnectionState.Open)
+                {
+                    this.SqlConn.Close();
+                }
+                this.SqlConn.Dispose();
+                this.SqlConn = null;
+            }
         }
     }
 }
