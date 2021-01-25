@@ -24,3 +24,6 @@
 *.refactorlog
 /Module.DynamicPage/bin/Debug
 /Module.DynamicPage/obj/Debug
+*.jfm
+/WebEngine.Tests/bin/Debug
+/WebEngine.Tests/obj/Debug

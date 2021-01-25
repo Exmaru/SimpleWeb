@@ -1,14 +1,22 @@
 ﻿using OctopusV3.Core;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.WebPages.Html;
+using OctopusV3.DynamicHTML;
 
 namespace WebEngine
 {
     public class GlobalUtility
     {
         private JavaScriptSerializer jsonHandler = new JavaScriptSerializer();
+
+        public enum TextType
+        {
+            Longest, Shortest
+        }
 
         public GlobalUtility()
         {
@@ -116,6 +124,11 @@ namespace WebEngine
             return new HtmlString(HttpUtility.UrlDecode(str));
         }
 
+        public string TagRemove(string str)
+        {
+            return HttpUtility.UrlDecode(str).RemoveTag();
+        }
+
     }
 
     public static class ExtendGlobalUtility
@@ -146,5 +159,50 @@ namespace WebEngine
             return result.Trim();
         }
 
+        public static HtmlString GetText(this string str, GlobalUtility.TextType type = GlobalUtility.TextType.Longest)
+        {
+            string result = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(str))
+            {
+                List<string> list = HttpUtility.UrlDecode(str).toTagList();
+                if (list != null && list.Count > 0)
+                {
+                    string tmp = string.Empty;
+
+                    switch (type)
+                    {
+                        case GlobalUtility.TextType.Longest:
+                            foreach(string item in list)
+                            {
+                                tmp = HttpUtility.UrlDecode(item.RemoveTag().Trim());
+                                if (!string.IsNullOrWhiteSpace(tmp))
+                                {
+                                    if (tmp.Length >  result.Length)
+                                    {
+                                        result = tmp;
+                                    }
+                                }
+                            }
+                            break;
+                        case GlobalUtility.TextType.Shortest:
+                            foreach (string item in list)
+                            {
+                                tmp = HttpUtility.UrlDecode(item.RemoveTag().Trim());
+                                if (!string.IsNullOrWhiteSpace(tmp))
+                                {
+                                    if (tmp.Length < result.Length)
+                                    {
+                                        result = tmp;
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+
+            return new HtmlString(result);
+        }
     }
 }

@@ -241,7 +241,7 @@ namespace WebEngine
     {
         public static HtmlString Paging(this HtmlHelper html, string path, PagingParameter paramData)
         {
-            StringBuilder builder = new StringBuilder(300);
+            string result = string.Empty;
             if (!string.IsNullOrWhiteSpace(path))
             {
                 FileInfo fi = new FileInfo(HttpContext.Current.Server.MapPath(path));
@@ -250,45 +250,59 @@ namespace WebEngine
                     string tags = File.ReadAllText(fi.FullName, Encoding.UTF8);
                     if (!string.IsNullOrWhiteSpace(tags))
                     {
-                        builder.Append(tags);
-                        string pos = tags.ToLower();
-                        if (pos.IndexOf("<loop>") > -1)
-                        {
-                            string loop = tags.Substring(pos.IndexOf("<loop>"), (pos.LastIndexOf("</loop>") + 7) - pos.IndexOf("<loop>")).Trim();
-                            builder.Replace(loop, "{loop}");
-                            loop = loop.Substring(6, loop.Length - 7).Trim();
-                            StringBuilder inPage = new StringBuilder(200);
-                            foreach (int p in paramData.GetPaging())
-                            {
-                                inPage.AppendLine(loop.Replace("{LinkURL}", paramData.GetLinkURL(p)).Replace("{PageNo}", $"{p}"));
-                                if (p == paramData.CurPage)
-                                {
-                                    inPage.Replace("{active}", "active");
-                                }
-                                else
-                                {
-                                    inPage.Replace("{active}", "");
-                                }
-                            }
-                            builder.Replace("{loop}", inPage.ToString());
-                        }
-                        builder.Replace("{PreviousPage}", paramData.GetLinkURL(paramData.PreviousPage));
-                        builder.Replace("{NextPage}", paramData.GetLinkURL(paramData.NextPage));
-
+                        result = tags.CreatePagingTag(paramData);
                     }
                 }
                 else
                 {
-                    builder.Append($"Not found file : {path}");
+                    result = $"Not found file : {path}";
                 }
             }
             else
             {
-                builder.Append("Not found path");
+                result = "Not found path";
             }
 
 
-            return new HtmlString(builder.ToString());
+            return new HtmlString(result);
+        }
+
+        public static string CreatePagingTag(this string tags, PagingParameter paramData)
+        {
+            StringBuilder builder = new StringBuilder(300);
+
+            if (!string.IsNullOrWhiteSpace(tags))
+            {
+                builder.Append(tags);
+                string pos = tags.ToLower();
+                if (pos.IndexOf("<loop>") > -1)
+                {
+                    string loop = tags.Substring(pos.IndexOf("<loop>"), (pos.LastIndexOf("</loop>") + 7) - pos.IndexOf("<loop>")).Trim();
+                    builder.Replace(loop, "{loop}");
+                    loop = loop.Replace("<loop>", "").Replace("</loop>", "").Trim();
+                    StringBuilder inPage = new StringBuilder(200);
+                    foreach (int p in paramData.GetPaging())
+                    {
+                        inPage.AppendLine(loop.Replace("{LinkURL}", paramData.GetLinkURL(p)).Replace("{PageNo}", $"{p}"));
+                        if (p == paramData.CurPage)
+                        {
+                            inPage.Replace("{active}", "active");
+                        }
+                        else
+                        {
+                            inPage.Replace("{active}", "");
+                        }
+                    }
+                    builder.Replace("{loop}", inPage.ToString());
+                }
+                builder.Replace("{PreviousPage}", paramData.GetLinkURL(paramData.PreviousPage));
+                builder.Replace("{NextPage}", paramData.GetLinkURL(paramData.NextPage));
+            }
+
+            builder.Replace(Environment.NewLine, "");
+            builder.Replace("\r\n", "");
+
+            return builder.ToString();
         }
     }
 }
