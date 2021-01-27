@@ -57,6 +57,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy .\*.* C:\wec /E /C /H /Y /Q /d
+xcopy .\wec-update.exe X:\SimpleWeb.Net\Content\release\function /H /Y /Q /d
+
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

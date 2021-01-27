@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Xml;
 
@@ -253,6 +254,74 @@ namespace WEC_Module
                                                 Console.WriteLine(ex.Message);
                                             }
                                         }
+                                        fi.Delete();
+                                    }
+
+                                    //의존성
+                                    fi = new FileInfo(System.IO.Path.Combine(di.FullName, $"{targetModule}.xml"));
+                                    if (fi.Exists)
+                                    {
+                                        try
+                                        {
+                                            foreach (string module in ReadConfigXml(fi.FullName, "Dependence", "Module"))
+                                            {
+                                                if (!string.IsNullOrWhiteSpace(module))
+                                                {
+                                                    ExecuteCommand($"wec-module -i {module} -p {targetPath}");
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine(ex.Message);
+                                        }
+
+                                        try
+                                        {
+                                            if (ReadConfigXml(fi.FullName, "Root", "URL").Count > 0)
+                                            {
+                                                DirectoryInfo targetdi = null;
+                                                string root = ReadConfigXml(fi.FullName, "Root", "URL").FirstOrDefault() ?? string.Empty;
+                                                if (!string.IsNullOrWhiteSpace(root))
+                                                {
+                                                    switch (root)
+                                                    {
+                                                        case ".":
+                                                            targetdi = new DirectoryInfo(targetPath);
+                                                            break;
+                                                        case "..":
+                                                            targetdi = new DirectoryInfo(targetPath);
+                                                            targetdi = targetdi.Parent;
+                                                            break;
+                                                        default:
+                                                            targetdi = new DirectoryInfo(System.IO.Path.Combine(targetPath, root));
+                                                            break;
+                                                    }
+
+                                                    ProcessXcopy(di.FullName, targetdi.FullName);
+                                                    foreach(FileInfo f in di.GetFiles())
+                                                    {
+                                                        f.Delete();
+                                                    }
+                                                    foreach(DirectoryInfo d in di.GetDirectories())
+                                                    {
+                                                        foreach (FileInfo f in d.GetFiles())
+                                                        {
+                                                            f.Delete();
+                                                        }
+                                                        d.Delete();
+                                                    }
+                                                    di.Delete();
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine(ex.Message);
+                                        }
+
+
+
                                         fi.Delete();
                                     }
                                 }

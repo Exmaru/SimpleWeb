@@ -201,7 +201,8 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy .\*.* V:\DotNetWeb\SMN_HUX\bin\ /E /C /H /Y /Q /d
 xcopy .\*.* X:\SimpleWeb.Net\bin\ /E /C /H /Y /Q /d
-
+xcopy .\*.* X:\SimpleWeb.Net\Content\release\bin /E /C /H /Y /Q /d
+xcopy .\WebEngine.dll X:\SimpleWeb.Net\Content\release\v1\v1_0_0 /H /Y /Q /d
 
 </PostBuildEvent>
   </PropertyGroup>

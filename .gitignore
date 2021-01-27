@@ -27,3 +27,6 @@
 *.jfm
 /WebEngine.Tests/bin/Debug
 /WebEngine.Tests/obj/Debug
+/WebEngine.Tests/obj/Release
+/WEC-Module/obj/Release
+/WEC-Update/obj/Release
