@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.WebPages.Html;
 using OctopusV3.DynamicHTML;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace WebEngine
 {
@@ -129,6 +131,32 @@ namespace WebEngine
             return HttpUtility.UrlDecode(str).RemoveTag();
         }
 
+        public string GetUniqueFileName(string serverMapPath)
+        {
+            string result = serverMapPath.Trim();
+            FileInfo fi = new FileInfo(result);
+
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                string ext = result.Substring(result.LastIndexOf(".")).Replace(".", "").Trim();
+                string folder = result.Substring(0, result.LastIndexOf("\\"));
+                string fileName = $"{DateTime.Now.ToString($"yyyyMMddHHmm")}_{RandomHelper.RandomString(8)}";
+                int num = 0;
+
+                do
+                {
+                    result = $"{fileName}[{num++}].{ext}";
+                    fi = new FileInfo(Path.Combine(folder, result));
+                } while (fi.Exists);
+            }
+
+            return fi.FullName;
+        }
+
+        public static string getSrc(string content)
+        {
+            return Regex.Match(content, "src\\s*=\\s*\"(?<url>.*?)\"").Groups["url"]?.Value;
+        }
     }
 
     public static class ExtendGlobalUtility
@@ -157,6 +185,11 @@ namespace WebEngine
 
 
             return result.Trim();
+        }
+
+        public static string getSrc(this HtmlHelper html, string content)
+        {
+            return Regex.Match(content, "src\\s*=\\s*\"(?<url>.*?)\"").Groups["url"]?.Value;
         }
 
         public static HtmlString GetText(this string str, GlobalUtility.TextType type = GlobalUtility.TextType.Longest)

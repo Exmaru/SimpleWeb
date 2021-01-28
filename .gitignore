@@ -30,3 +30,4 @@
 /WebEngine.Tests/obj/Release
 /WEC-Module/obj/Release
 /WEC-Update/obj/Release
+*.dbmdl

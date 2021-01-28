@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Web;
 
 namespace WebEngine
@@ -27,6 +28,39 @@ namespace WebEngine
         {
             response.ContentType = "application/json";
             return new HtmlString(GlobalSite.Utility.Serialize(obj));
+        }
+
+        public static string GetFile(this HttpRequestBase request, string Name, string Root = "/UploadFiles")
+        {
+            string result = string.Empty;
+            HttpPostedFileBase upload = request.Files[Name];
+            string uploadFolder = HttpContext.Current.Server.MapPath(Root);
+            DirectoryInfo di = new DirectoryInfo(uploadFolder);
+            if (!di.Exists) di.Create();
+
+            if (upload != null)
+            {
+                try
+                {
+                    string path = Path.Combine(uploadFolder, Path.GetFileName(upload.FileName));
+                    FileInfo fi = new FileInfo(path);
+                    if (fi.Exists)
+                    {
+                        path = GlobalSite.Utility.GetUniqueFileName(path);
+                        fi = new FileInfo(path);
+                    }
+
+                    upload.SaveAs(path);
+                    result = (Root.Substring(Root.Length - 1, 1) == "/") ? $"{Root}{fi.Name}" : $"{Root}/{fi.Name}";
+                }
+                catch (Exception ex)
+                {
+                    result = "";
+                    Logger.Current.Error(ex);
+                }
+            }
+
+            return result;
         }
 
         public static string GetString(this HttpRequestBase request, string Name, string DefaultValue = "")
