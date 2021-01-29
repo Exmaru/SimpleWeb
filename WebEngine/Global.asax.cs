@@ -49,6 +49,8 @@ namespace WebEngine
 
         public static bool IsBundle { get; set; } = false;
 
+        public static bool IsCrypto { get; set; } = false;
+
         public static string Version { get; set; } = string.Empty;
 
         public static ConcurrentDictionary<string, string> Collection { get; set; } = new ConcurrentDictionary<string, string>();
@@ -186,6 +188,7 @@ namespace WebEngine
             AppID = SimpleConfig.Global.GetString("AppID");
             IsCompress = SimpleConfig.Global.GetBoolean("IsCompress");
             IsBundle = SimpleConfig.Global.GetBoolean("IsBundle");
+            IsCrypto = SimpleConfig.Global.GetBoolean("IsCrypto");
             Version = SimpleConfig.Global.GetString("Version");
             Set("title", SimpleConfig.Global.GetString("title"));
             Set("siteurl", SimpleConfig.Global.GetString("siteurl"));

@@ -131,6 +131,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ExtendHtmlHelper.cs" />
+    <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\UploadHelper.cs" />
     <Compile Include="Models\AppData.cs" />
     <Compile Include="Models\AuthException.cs" />

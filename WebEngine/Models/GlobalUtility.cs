@@ -153,10 +153,61 @@ namespace WebEngine
             return fi.FullName;
         }
 
-        public static string getSrc(string content)
+        public string getSrc(string content)
         {
             return Regex.Match(content, "src\\s*=\\s*\"(?<url>.*?)\"").Groups["url"]?.Value;
         }
+
+        public string PasswordCrypto(string Password)
+        {
+            return CryptoHelper.SHA512.Encrypt(Password);
+        }
+
+        public ReturnValue IsCryptoPassword(bool IsCrypto, string NowPassword, string ComparePassword)
+        {
+            var result = new ReturnValue();
+
+            if (!string.IsNullOrWhiteSpace(NowPassword) && !string.IsNullOrWhiteSpace(ComparePassword))
+            {
+                if (IsCrypto)
+                {
+                    try
+                    {
+                        if (CryptoHelper.SHA512.ValidateCheck(NowPassword, ComparePassword))
+                        {
+                            result.Success(1);
+                        }
+                        else
+                        {
+                            result.Error("비밀번호가 일치하지 않습니다.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        result.Error(ex);
+                        Logger.Current.Error(ex);
+                    }
+                }
+                else
+                {
+                    if (NowPassword == ComparePassword)
+                    {
+                        result.Success(1);
+                    }
+                    else
+                    {
+                        result.Error("비밀번호가 일치하지 않습니다.");
+                    }
+                }
+            }
+            else
+            {
+                result.Error("비교대상이 없습니다. 입력항목을 확인해 주세요.");
+            }
+
+            return result;
+        }
+
     }
 
     public static class ExtendGlobalUtility

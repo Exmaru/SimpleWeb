@@ -30,9 +30,9 @@ namespace WebEngine
             return new HtmlString(GlobalSite.Utility.Serialize(obj));
         }
 
-        public static string GetFile(this HttpRequestBase request, string Name, string Root = "/UploadFiles")
+        public static ReturnValue GetFile(this HttpRequestBase request, string Name, string Root = "/UploadFiles")
         {
-            string result = string.Empty;
+            ReturnValue result = new ReturnValue();
             HttpPostedFileBase upload = request.Files[Name];
             string uploadFolder = HttpContext.Current.Server.MapPath(Root);
             DirectoryInfo di = new DirectoryInfo(uploadFolder);
@@ -51,11 +51,78 @@ namespace WebEngine
                     }
 
                     upload.SaveAs(path);
-                    result = (Root.Substring(Root.Length - 1, 1) == "/") ? $"{Root}{fi.Name}" : $"{Root}/{fi.Name}";
+                    result.Success(upload.ContentLength);
+                    result.Value = (Root.Substring(Root.Length - 1, 1) == "/") ? $"{Root}{fi.Name}" : $"{Root}/{fi.Name}";
                 }
                 catch (Exception ex)
                 {
-                    result = "";
+                    result.Error(ex);
+                    Logger.Current.Error(ex);
+                }
+            }
+
+            return result;
+        }
+
+        public static ReturnValue GetThumbnail(this HttpRequestBase request, string Name, int width, int height, string Root = "/UploadFiles")
+        {
+            ReturnValue result = new ReturnValue();
+            HttpPostedFileBase upload = request.Files[Name];
+            string uploadFolder = HttpContext.Current.Server.MapPath(Root);
+            DirectoryInfo di = new DirectoryInfo(uploadFolder);
+            if (!di.Exists) di.Create();
+
+            if (upload != null)
+            {
+                try
+                {
+                    string path = Path.Combine(uploadFolder, Path.GetFileName(upload.FileName));
+                    FileInfo fi = new FileInfo(path);
+                    if (fi.Exists)
+                    {
+                        path = GlobalSite.Utility.GetUniqueFileName(path);
+                        fi = new FileInfo(path);
+                    }
+
+                    result = upload.SaveThumbnail(path, width, height);
+                    result.Value = (Root.Substring(Root.Length - 1, 1) == "/") ? $"{Root}{fi.Name}" : $"{Root}/{fi.Name}";
+                }
+                catch (Exception ex)
+                {
+                    result.Error(ex);
+                    Logger.Current.Error(ex);
+                }
+            }
+
+            return result;
+        }
+
+        public static ReturnValue GetCrop(this HttpRequestBase request, string Name, int width, int height, string Root = "/UploadFiles")
+        {
+            ReturnValue result = new ReturnValue();
+            HttpPostedFileBase upload = request.Files[Name];
+            string uploadFolder = HttpContext.Current.Server.MapPath(Root);
+            DirectoryInfo di = new DirectoryInfo(uploadFolder);
+            if (!di.Exists) di.Create();
+
+            if (upload != null)
+            {
+                try
+                {
+                    string path = Path.Combine(uploadFolder, Path.GetFileName(upload.FileName));
+                    FileInfo fi = new FileInfo(path);
+                    if (fi.Exists)
+                    {
+                        path = GlobalSite.Utility.GetUniqueFileName(path);
+                        fi = new FileInfo(path);
+                    }
+
+                    result = upload.SaveCrop(path, width, height);
+                    result.Value = (Root.Substring(Root.Length - 1, 1) == "/") ? $"{Root}{fi.Name}" : $"{Root}/{fi.Name}";
+                }
+                catch (Exception ex)
+                {
+                    result.Error(ex);
                     Logger.Current.Error(ex);
                 }
             }
