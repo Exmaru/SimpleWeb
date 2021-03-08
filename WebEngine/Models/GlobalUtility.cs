@@ -249,7 +249,7 @@ namespace WebEngine
 
             if (!string.IsNullOrWhiteSpace(str))
             {
-                List<string> list = HttpUtility.UrlDecode(str).toTagList();
+                List<string> list = new List<string>(); // HttpUtility.UrlDecode(str).toTagList();
                 if (list != null && list.Count > 0)
                 {
                     string tmp = string.Empty;
