@@ -53,6 +53,8 @@ namespace WebEngine
 
         public static string Version { get; set; } = string.Empty;
 
+        public static string FcmPublicKey { get; set; } = string.Empty;
+
         public static ConcurrentDictionary<string, string> Collection { get; set; } = new ConcurrentDictionary<string, string>();
 
         public static ConcurrentDictionary<string, string> XmlData { get; set; } = new ConcurrentDictionary<string, string>();
@@ -190,6 +192,7 @@ namespace WebEngine
             IsBundle = SimpleConfig.Global.GetBoolean("IsBundle");
             IsCrypto = SimpleConfig.Global.GetBoolean("IsCrypto");
             Version = SimpleConfig.Global.GetString("Version");
+            FcmPublicKey = SimpleConfig.Global.GetString("fcmpublickey");
             Set("title", SimpleConfig.Global.GetString("title"));
             Set("siteurl", SimpleConfig.Global.GetString("siteurl"));
             Set("mobileurl", SimpleConfig.Global.GetString("mobileurl"));
