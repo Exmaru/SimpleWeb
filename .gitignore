@@ -31,3 +31,5 @@
 /WEC-Module/obj/Release
 /WEC-Update/obj/Release
 *.dbmdl
+/WEC-Builder/bin/Debug
+/WEC-Builder/obj/Debug
