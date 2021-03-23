@@ -263,10 +263,11 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>xcopy .\*.* V:\DotNetWeb\SMN_Golfbox\bin /E /C /H /Y /Q /d
-xcopy .\*.* X:\SimpleWeb.Net\bin\ /E /C /H /Y /Q /d
-xcopy .\*.* X:\SimpleWeb.Net\Content\release\bin /E /C /H /Y /Q /d
-xcopy .\WebEngine.dll X:\SimpleWeb.Net\Content\release\v1\v1_0_0 /H /Y /Q /d
+    <PostBuildEvent>echo xcopy .\*.* V:\DotNetWeb\SMN_Golfbox\bin /E /C /H /Y /Q /d
+echo xcopy .\*.* X:\SimpleWeb.Net\bin\ /E /C /H /Y /Q /d
+echo xcopy .\*.* X:\SimpleWeb.Net\Content\release\bin /E /C /H /Y /Q /d
+echo xcopy .\WebEngine.dll X:\SimpleWeb.Net\Content\release\v1\v1_0_0 /H /Y /Q /d
+xcopy .\WebEngine.dll X:\SMN_Turboairkorea\bin\  /E /C /H /Y /Q /d
 
 
 </PostBuildEvent>
