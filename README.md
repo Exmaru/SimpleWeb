@@ -181,10 +181,6 @@ The following targets can be specified using the `DbRow`:
 You can send mail using `MailHelper`.
 
 ```cs
-DbResult result = new DbResult();
-DateTime serverTime = new DateTime();
-DbRow detail = new DbRow();
-
 using(var mail  = new MailHelper(SMTPServers.NAVER))
 {
 	mail.Login("naverid", "naverpassword");
