@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace WebEngine
@@ -209,6 +210,8 @@ namespace WebEngine
                     {
                         this.message.To.Add(email);
                     }
+                    this.client.EnableSsl = this.IsSSL;
+                    this.client.Port = this.Port;
                     this.client.Send(this.message);
                     result.Success(emails.Count);
                 }
@@ -224,6 +227,18 @@ namespace WebEngine
 
             return result;
         }
+
+
+        public Task<ReturnValue> SendAsync(params string[] emails)
+        {
+            return Task.Factory.StartNew(() => this.Send(emails.ToList()));
+        }
+
+        public Task<ReturnValue> SendAsync(List<string> emails)
+        {
+            return Task.Factory.StartNew(() => this.Send(emails));
+        }
+
 
         protected virtual void Dispose(bool disposing)
         {
