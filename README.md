@@ -176,6 +176,34 @@ The following targets can be specified using the `DbRow`:
 
 ---
 
+### Mail
+
+You can send mail using `MailHelper`.
+
+```cs
+DbResult result = new DbResult();
+DateTime serverTime = new DateTime();
+DbRow detail = new DbRow();
+
+using(var mail  = new MailHelper(SMTPServers.NAVER))
+{
+	mail.Login("naverid", "naverpassword");
+	mail.FromMail = "helper@simpleweb.net";
+	mail.Subject = "[Event] Mail Send!!";
+	mail.Body = "<h3>hello world</h3>";
+	mail.IsHtml = true;
+	mail.Send("tester@test.com", "tester2@test.com");
+}
+```
+
+It provides the following additional functions:
+
+ - `SetBodyFromFile` Replace the body of the mail with a file in the specified path.
+ - `AddFile` Specify the attachment..
+
+
+---
+
 
 ### Ajax
 

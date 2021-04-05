@@ -45,7 +45,7 @@ namespace WebEngine
                     string responseText = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                     if (httpResponse.IsSuccessStatusCode && !string.IsNullOrWhiteSpace(responseText))
                     {
-                        Logger.Current.Debug(responseText);
+                        //Logger.Current.Debug(responseText);
                         NotificationResponseParameter rtn = ser.Deserialize<NotificationResponseParameter>(responseText);
                         if (rtn != null && rtn.success > 0)
                         {
