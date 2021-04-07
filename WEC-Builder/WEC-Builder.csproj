@@ -103,6 +103,12 @@
     <Compile Include="Forms\DbCheckForm.Designer.cs">
       <DependentUpon>DbCheckForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FindProjectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FindProjectForm.Designer.cs">
+      <DependentUpon>FindProjectForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ListCodeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -149,8 +155,18 @@
     <Compile Include="Models\QueryHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\AlterTableQuery.cs" />
+    <Compile Include="Queries\CreateIndexQuery.cs" />
+    <Compile Include="Queries\CreateSPQuery.cs" />
+    <Compile Include="Queries\CreateTableQuery.cs" />
+    <Compile Include="Queries\CreateViewQuery.cs" />
+    <Compile Include="Queries\InitQuery.cs" />
+    <Compile Include="Queries\QueryMake.cs" />
     <EmbeddedResource Include="Forms\DbCheckForm.resx">
       <DependentUpon>DbCheckForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FindProjectForm.resx">
+      <DependentUpon>FindProjectForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ListCodeForm.resx">
       <DependentUpon>ListCodeForm.cs</DependentUpon>

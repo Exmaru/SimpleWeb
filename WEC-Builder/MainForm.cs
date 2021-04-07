@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -144,6 +146,85 @@ namespace WEC_Builder
             return result;
         }
 
+        public void Alert(string msg)
+        {
+            MessageBox.Show(msg);
+        }
+
+        public void ExecuteCommand(string command)
+        {
+            int exitCode;
+            ProcessStartInfo processInfo;
+            Process process;
+
+            processInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
+            processInfo.CreateNoWindow = true;
+            processInfo.UseShellExecute = false;
+            // *** Redirect the output ***
+            processInfo.RedirectStandardError = true;
+            processInfo.RedirectStandardOutput = true;
+
+            process = Process.Start(processInfo);
+            process.WaitForExit();
+
+            // *** Read the streams ***
+            // Warning: This approach can lead to deadlocks, see Edit #2
+            string output = process.StandardOutput.ReadToEnd();
+            string error = process.StandardError.ReadToEnd();
+
+            exitCode = process.ExitCode;
+
+            Alert("output>>" + (String.IsNullOrEmpty(output) ? "(none)" : output));
+            Alert("error>>" + (String.IsNullOrEmpty(error) ? "(none)" : error));
+            Alert("ExitCode: " + exitCode.ToString());
+            process.Close();
+        }
+
+        public void ProcessXcopy(string SolutionDirectory, string TargetDirectory, Action callback = null)
+        {
+            Thread thread = new Thread(new ParameterizedThreadStart(ProcessXCopyProc));
+            thread.Start(new { SolutionDirectory = SolutionDirectory, TargetDirectory = TargetDirectory, Callback = callback });
+        }
+
+        private void ProcessXCopyProc(object obj)
+        {
+            dynamic paramData = obj;
+
+            string SolutionDirectory = paramData.SolutionDirectory;
+            string TargetDirectory = paramData.TargetDirectory;
+            Action callback = paramData.Callback;
+
+            // Use ProcessStartInfo class
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.CreateNoWindow = false;
+            startInfo.UseShellExecute = false;
+            //Give the name as Xcopy
+            startInfo.FileName = "xcopy";
+            //make the window Hidden
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            //Send the Source and destination as Arguments to the process
+            startInfo.Arguments = "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" + @" /E /C /H /Y /Q /d";
+
+            try
+            {
+                // Start the process with the info we specified.
+                // Call WaitForExit and then the using statement will close.
+                using (Process exeProcess = Process.Start(startInfo))
+                {
+                    exeProcess.WaitForExit();
+                }
+
+                if (callback != null)
+                {
+                    callback();
+                }
+            }
+            catch (Exception exp)
+            {
+                Alert(exp.Message);
+            }
+        }
+
         public void AllClose()
         {
             foreach(var frm in this.MdiChildren)
@@ -267,6 +348,124 @@ namespace WEC_Builder
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void baseSETToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Confirm("기본 데이터베이스 설정을 진행하시겠습니까?"))
+            {
+                if (SqlConn.State == ConnectionState.Open)
+                {
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = SqlConn;
+                        cmd.CommandType = System.Data.CommandType.Text;
+                        foreach (string query in QueryMake.CreateTables.All)
+                        {
+                            try
+                            {
+                                cmd.CommandText = query;
+                                cmd.ExecuteNonQuery();
+                            }
+                            catch (SqlException sqlex)
+                            {
+                                Alert(sqlex.Message);
+                            }
+                            catch (Exception ex)
+                            {
+                                Alert(ex.Message);
+                            }
+                        }
+
+                        foreach (string query in QueryMake.AlterTables.All)
+                        {
+                            try
+                            {
+                                cmd.CommandText = query;
+                                cmd.ExecuteNonQuery();
+                            }
+                            catch (SqlException sqlex)
+                            {
+                                Alert(sqlex.Message);
+                            }
+                            catch (Exception ex)
+                            {
+                                Alert(ex.Message);
+                            }
+                        }
+
+                        foreach (string query in QueryMake.CreateView.All)
+                        {
+                            try
+                            {
+                                cmd.CommandText = query;
+                                cmd.ExecuteNonQuery();
+                            }
+                            catch (SqlException sqlex)
+                            {
+                                Alert(sqlex.Message);
+                            }
+                            catch (Exception ex)
+                            {
+                                Alert(ex.Message);
+                            }
+                        }
+
+                        foreach (string query in QueryMake.CreateSP.All)
+                        {
+                            try
+                            {
+                                cmd.CommandText = query;
+                                cmd.ExecuteNonQuery();
+                            }
+                            catch (SqlException sqlex)
+                            {
+                                Alert(sqlex.Message);
+                            }
+                            catch (Exception ex)
+                            {
+                                Alert(ex.Message);
+                            }
+                        }
+
+                        foreach (string query in QueryMake.Initializer.All)
+                        {
+                            try
+                            {
+                                cmd.CommandText = query;
+                                cmd.ExecuteNonQuery();
+                            }
+                            catch (SqlException sqlex)
+                            {
+                                Alert(sqlex.Message);
+                            }
+                            catch (Exception ex)
+                            {
+                                Alert(ex.Message);
+                            }
+                        }
+
+                        Alert("Database Initialize Complete.");
+                    }
+                }
+                else
+                {
+                    Alert("Database가 연결되지 않았습니다.");
+                }
+            }
+        }
+
+        private void 프로젝트복사하기ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AllClose();
+            var frm = new FindProjectForm(this);
+            frm.WindowState = FormWindowState.Maximized;
+            frm.FormBorderStyle = FormBorderStyle.None;
+            frm.ShowInTaskbar = false;
+            frm.MdiParent = this;
+            frm.Width = this.Width;
+            frm.Height = this.Height;
+            frm.Show();
         }
     }
 }
