@@ -15,7 +15,8 @@ namespace WEC_Builder.Forms
 
         protected JavaScriptSerializer ser { get; set; } = new JavaScriptSerializer();
 
-        protected SqlConnectionStringBuilder SQL { get; set; }
+        protected SqlConnectionStringBuilder AgoDB { get; set; }
+        protected SqlConnectionStringBuilder newDB { get; set; }
 
         private bool IsProc = true;
 
@@ -67,13 +68,13 @@ namespace WEC_Builder.Forms
                                 if (!string.IsNullOrWhiteSpace(connStr))
                                 {
                                     IsProc = false;
-                                    SQL = new SqlConnectionStringBuilder(connStr);
-                                    TB_Container.Text = SQL.InitialCatalog;
-                                    TB_IP.Text = SQL.DataSource;
-                                    TB_ID.Text = SQL.UserID;
-                                    TB_Password.Text = SQL.Password;
-                                    TB_App.Text = SQL.ApplicationName;
-                                    TB_Conn.Text = SQL.ToString();
+                                    AgoDB = new SqlConnectionStringBuilder(connStr);
+                                    TB_Container.Text = AgoDB.InitialCatalog;
+                                    TB_IP.Text = AgoDB.DataSource;
+                                    TB_ID.Text = AgoDB.UserID;
+                                    TB_Password.Text = AgoDB.Password;
+                                    TB_App.Text = AgoDB.ApplicationName;
+                                    TB_Conn.Text = AgoDB.ToString();
                                     IsProc = true;
                                 }
                                 else
@@ -143,16 +144,16 @@ namespace WEC_Builder.Forms
                         FileInfo fi = new FileInfo(System.IO.Path.Combine(targetPath, "web.config"));
                         if (fi.Exists)
                         {
-                            if (SQL == null)
+                            if (newDB == null)
                             {
-                                SQL = new SqlConnectionStringBuilder();
+                                newDB = new SqlConnectionStringBuilder();
                             }
 
-                            SQL.InitialCatalog = TB_Container.Text;
-                            SQL.DataSource = TB_IP.Text;
-                            SQL.UserID = TB_ID.Text;
-                            SQL.Password = TB_Password.Text;
-                            SQL.ApplicationName = TB_App.Text;
+                            newDB.InitialCatalog = TB_Container.Text;
+                            newDB.DataSource = TB_IP.Text;
+                            newDB.UserID = TB_ID.Text;
+                            newDB.Password = TB_Password.Text;
+                            newDB.ApplicationName = TB_App.Text;
 
                             try
                             {
@@ -163,7 +164,7 @@ namespace WEC_Builder.Forms
 
                                 if (connectionStrings != null && connectionStrings.Count > 0)
                                 {
-                                    connectionStrings[0].Attributes["connectionString"].Value = SQL.ToString();
+                                    connectionStrings[0].Attributes["connectionString"].Value = newDB.ToString();
                                     doc.Save(fi.FullName);
                                 }
                                 else
@@ -209,12 +210,64 @@ namespace WEC_Builder.Forms
         {
             if (IsProc)
             {
-                SQL.InitialCatalog = TB_Container.Text;
-                SQL.DataSource = TB_IP.Text;
-                SQL.UserID = TB_ID.Text;
-                SQL.Password = TB_Password.Text;
-                SQL.ApplicationName = TB_App.Text;
-                TB_Conn.Text = SQL.ToString();
+                if (newDB == null)
+                {
+                    newDB = new SqlConnectionStringBuilder();
+                }
+
+                newDB.InitialCatalog = TB_Container.Text;
+                newDB.DataSource = TB_IP.Text;
+                newDB.UserID = TB_ID.Text;
+                newDB.Password = TB_Password.Text;
+                newDB.ApplicationName = TB_App.Text;
+                TB_Conn.Text = newDB.ToString();
+            }
+        }
+
+        private void btn_db_copy_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (SqlConnection agoConn = new SqlConnection(AgoDB.ConnectionString))
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    agoConn.Open();
+                    cmd.Connection = agoConn;
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = $"select [filename] from sys.sysdatabases where [name] = '{AgoDB.InitialCatalog}'";
+                    string tmp = Convert.ToString(cmd.ExecuteScalar());
+                    if (!string.IsNullOrWhiteSpace(tmp))
+                    {
+                        string timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                        FileInfo fi = new FileInfo(tmp);
+                        string path = fi.Directory.FullName;
+                        cmd.CommandText = 
+$@"
+backup database {AgoDB.InitialCatalog} 
+to disk='{path}\{AgoDB.InitialCatalog}_{timeStamp}.bak';
+";
+                        cmd.ExecuteNonQuery();
+                        Logger.Current.Debug(cmd.CommandText);
+
+                        cmd.CommandText =
+$@"
+restore database {newDB.InitialCatalog}
+from disk='{path}\{AgoDB.InitialCatalog}_{timeStamp}.bak'
+WITH move '{AgoDB.InitialCatalog}' to  '{path}\{newDB.InitialCatalog}.mdf',
+move '{AgoDB.InitialCatalog}_log' to  '{path}\{newDB.InitialCatalog}_log.ldf';
+";
+                        cmd.ExecuteNonQuery();
+                        Logger.Current.Debug(cmd.CommandText);
+                    }
+                    else
+                    {
+                        this.main.Alert("대상이 없습니다.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this.main.Alert(ex.Message);
             }
         }
     }

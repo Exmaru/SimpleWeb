@@ -52,6 +52,7 @@ namespace WEC_Builder.Forms
             this.grp_func = new System.Windows.Forms.GroupBox();
             this.btn_copy = new System.Windows.Forms.Button();
             this.Btn_Get_Target_Db = new System.Windows.Forms.Button();
+            this.btn_db_copy = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.grp_func.SuspendLayout();
@@ -283,6 +284,7 @@ namespace WEC_Builder.Forms
             // 
             this.grp_func.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.grp_func.Controls.Add(this.btn_db_copy);
             this.grp_func.Controls.Add(this.btn_copy);
             this.grp_func.Controls.Add(this.Btn_Get_Target_Db);
             this.grp_func.Location = new System.Drawing.Point(13, 321);
@@ -297,9 +299,9 @@ namespace WEC_Builder.Forms
             this.btn_copy.Font = new System.Drawing.Font("나눔고딕코딩", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btn_copy.Location = new System.Drawing.Point(273, 33);
             this.btn_copy.Name = "btn_copy";
-            this.btn_copy.Size = new System.Drawing.Size(134, 66);
+            this.btn_copy.Size = new System.Drawing.Size(151, 66);
             this.btn_copy.TabIndex = 1;
-            this.btn_copy.Text = "복사하기";
+            this.btn_copy.Text = "소스복사하기";
             this.btn_copy.UseVisualStyleBackColor = true;
             this.btn_copy.Click += new System.EventHandler(this.btn_copy_Click);
             // 
@@ -313,6 +315,17 @@ namespace WEC_Builder.Forms
             this.Btn_Get_Target_Db.Text = "대상에서 접속정보 가져오기";
             this.Btn_Get_Target_Db.UseVisualStyleBackColor = true;
             this.Btn_Get_Target_Db.Click += new System.EventHandler(this.Btn_Get_Target_Db_Click);
+            // 
+            // btn_db_copy
+            // 
+            this.btn_db_copy.Font = new System.Drawing.Font("나눔고딕코딩", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btn_db_copy.Location = new System.Drawing.Point(430, 33);
+            this.btn_db_copy.Name = "btn_db_copy";
+            this.btn_db_copy.Size = new System.Drawing.Size(151, 66);
+            this.btn_db_copy.TabIndex = 2;
+            this.btn_db_copy.Text = "DB복사하기";
+            this.btn_db_copy.UseVisualStyleBackColor = true;
+            this.btn_db_copy.Click += new System.EventHandler(this.btn_db_copy_Click);
             // 
             // FindProjectForm
             // 
@@ -358,5 +371,6 @@ namespace WEC_Builder.Forms
         private System.Windows.Forms.GroupBox grp_func;
         private System.Windows.Forms.Button Btn_Get_Target_Db;
         private System.Windows.Forms.Button btn_copy;
+        private System.Windows.Forms.Button btn_db_copy;
     }
 }
