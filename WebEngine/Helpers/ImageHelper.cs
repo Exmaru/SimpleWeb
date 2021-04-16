@@ -16,14 +16,10 @@ namespace WebEngine
             if (fi.Exists)
             {
                 using (FileStream fs = File.OpenRead(fi.FullName))
+                using (Image image = Image.FromStream(fs, false, false))
+                using (Image pThumbnail = image.GetThumbnailImage(width, height, delegate { return false; }, IntPtr.Zero))
                 {
-                    using (Image image = Image.FromStream(fs, false, false))
-                    {
-                        using (Image pThumbnail = image.GetThumbnailImage(width, height, delegate { return false; }, IntPtr.Zero))
-                        {
-                            result.Success(fi.Length, pThumbnail);
-                        }
-                    }
+                    result.Success(fi.Length, pThumbnail);
                 }
             }
             else
@@ -45,34 +41,49 @@ namespace WebEngine
                 if (fi.Exists)
                 {
                     using (FileStream fs = File.OpenRead(fi.FullName))
-                    using (Image image = Image.FromStream(fs, false, false))
+                    using (Image origin = Image.FromStream(fs, false, false))
                     {
-                        if (image.Width > width && image.Height > height)
+                        Image image = null;
+                        Point point = new Point();
+                        if (origin.Width > origin.Height)
                         {
-                            Point point = new Point();
-                            point.X = (image.Width - width) / 2;
-                            if (height > (image.Height * 2))
+                            image = origin.GetThumbnailImage(width, GetHeight(origin.Width, width, origin.Height), delegate { return false; }, IntPtr.Zero);
+                            point.X = 0;
+                            if (height > image.Height)
                             {
-                                point.Y = height / 2;
+                                point.Y = (height - image.Height) / 2;
                             }
                             else
                             {
                                 point.Y = (image.Height - height) / 2;
                             }
-                            Rectangle cropRect = new Rectangle(point, new Size(width, height));
-                            Bitmap src = image as Bitmap;
-                            result.Data = src.Clone(cropRect, image.PixelFormat);
-                            result.Check = true;
-                            result.Value = "Crop";
-                            result.Code = fi.Length;
                         }
                         else
                         {
-                            result.Data = image.GetThumbnailImage(width, height, delegate { return false; }, IntPtr.Zero);
-                            result.Check = true;
-                            result.Value = "Thumbnail";
-                            result.Code = fi.Length;
+                            image = origin.GetThumbnailImage(GetWidth(origin.Height, height, origin.Width), height, delegate { return false; }, IntPtr.Zero);
+                            point.Y = 0;
+                            if (width > image.Width)
+                            {
+                                point.X = (width - image.Width) / 2;
+                            }
+                            else
+                            {
+                                point.X = (image.Width - width) / 2;
+                            }
                         }
+
+
+                        Bitmap target = ExtendImageHelper.DrawFilledRectangle(width, height);
+                        Rectangle ImageSize = new Rectangle(0, 0, width, height);
+                        using (Graphics grp = Graphics.FromImage(target))
+                        {
+                            grp.DrawImage(image, point.X, point.Y, ImageSize, GraphicsUnit.Pixel);
+                        }
+
+                        result.Data = target.Clone() as Image;
+                        result.Check = true;
+                        result.Value = "Crop";
+                        result.Code = fi.Length;
                     }
                 }
                 else
@@ -82,6 +93,7 @@ namespace WebEngine
             }
             catch (Exception ex)
             {
+                Logger.Current.Error(ex);
                 result.Error(ex);
             }
 
@@ -445,6 +457,22 @@ namespace WebEngine
             MemoryStream ms = new MemoryStream(bytes);
             Image recImg = Image.FromStream(ms);
             return recImg;
+        }
+
+        private static int GetHeight(int originWidth, int width, int OriginHeight)
+        {
+            int result = 0;
+            double widthPersent = (double)width / (double)originWidth;
+            result = Convert.ToInt32(OriginHeight * widthPersent);
+            return result;
+        }
+
+        private static int GetWidth(int originHeight, int height, int OriginWidth)
+        {
+            int result = 0;
+            double heightPersent = height / originHeight;
+            result = Convert.ToInt32(OriginWidth * heightPersent);
+            return result;
         }
     }
 
