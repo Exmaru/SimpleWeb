@@ -47,6 +47,9 @@
     <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="ErpHelper">
+      <HintPath>..\..\..\..\PrivateProjects\EcountERPHelper\ECountERPHelper\ErpHelper\bin\Debug\netstandard2.0\ErpHelper.dll</HintPath>
+    </Reference>
     <Reference Include="FirebaseAdmin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=97c8d00c348326ed, processorArchitecture=MSIL">
       <HintPath>..\packages\FirebaseAdmin.2.0.0\lib\net461\FirebaseAdmin.dll</HintPath>
     </Reference>
@@ -189,6 +192,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ExcelHelper.cs" />
     <Compile Include="Helpers\ExtendHtmlHelper.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
@@ -270,7 +274,8 @@ xcopy .\*.* X:\SimpleWeb.Net\bin\ /E /C /H /Y /Q /d
 xcopy .\*.* X:\SimpleWeb.Net\Content\release\bin\ /E /C /H /Y /Q /d
 xcopy .\WebEngine.dll X:\SimpleWeb.Net\Content\release\v1\v1_0_0 /H /Y /Q /d
 echo xcopy .\WebEngine.dll X:\SMN_Turboairkorea\bin\  /E /C /H /Y /Q /d
-xcopy .\WebEngine.dll V:\DotNetWeb\SMN_JMall\bin\  /E /C /H /Y /Q /d
+xcopy .\WebEngine.dll V:\DotNetWeb\SMN_EauClair\bin\  /E /C /H /Y /Q /d
+xcopy .\WebEngine.dll V:\DotNetWeb\SMN_SeoNex\bin\  /E /C /H /Y /Q /d
 
 
 </PostBuildEvent>

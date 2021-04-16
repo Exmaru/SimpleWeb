@@ -34,6 +34,7 @@ namespace WEC_Builder
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.새프로젝트ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.프로젝트불러오기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.프로젝트복사하기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -43,6 +44,7 @@ namespace WEC_Builder
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.sP만들기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.baseSETToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.웹코드ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.목록코드ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.상세코드ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,10 +52,11 @@ namespace WEC_Builder
             this.모듈설치ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aDMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.게시판관리ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.기능ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dB복제ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.baseSETToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.프로젝트복사하기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aPITestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -65,7 +68,8 @@ namespace WEC_Builder
             this.데이터베이스ToolStripMenuItem,
             this.웹코드ToolStripMenuItem,
             this.모듈설치ToolStripMenuItem,
-            this.게시판관리ToolStripMenuItem});
+            this.게시판관리ToolStripMenuItem,
+            this.기능ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(984, 24);
@@ -89,38 +93,45 @@ namespace WEC_Builder
             // 새프로젝트ToolStripMenuItem
             // 
             this.새프로젝트ToolStripMenuItem.Name = "새프로젝트ToolStripMenuItem";
-            this.새프로젝트ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.새프로젝트ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.새프로젝트ToolStripMenuItem.Text = "새 프로젝트";
             this.새프로젝트ToolStripMenuItem.Click += new System.EventHandler(this.새프로젝트ToolStripMenuItem_Click);
             // 
             // 프로젝트불러오기ToolStripMenuItem
             // 
             this.프로젝트불러오기ToolStripMenuItem.Name = "프로젝트불러오기ToolStripMenuItem";
-            this.프로젝트불러오기ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.프로젝트불러오기ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.프로젝트불러오기ToolStripMenuItem.Text = "프로젝트불러오기";
             this.프로젝트불러오기ToolStripMenuItem.Click += new System.EventHandler(this.프로젝트불러오기ToolStripMenuItem_Click);
+            // 
+            // 프로젝트복사하기ToolStripMenuItem
+            // 
+            this.프로젝트복사하기ToolStripMenuItem.Name = "프로젝트복사하기ToolStripMenuItem";
+            this.프로젝트복사하기ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.프로젝트복사하기ToolStripMenuItem.Text = "프로젝트복사하기";
+            this.프로젝트복사하기ToolStripMenuItem.Click += new System.EventHandler(this.프로젝트복사하기ToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(167, 6);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
             this.toolStripMenuItem1.Text = "프로젝트 재설정";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(167, 6);
             // 
             // 종료ToolStripMenuItem
             // 
             this.종료ToolStripMenuItem.Name = "종료ToolStripMenuItem";
-            this.종료ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.종료ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.종료ToolStripMenuItem.Text = "종료";
             this.종료ToolStripMenuItem.Click += new System.EventHandler(this.종료ToolStripMenuItem_Click);
             // 
@@ -139,26 +150,33 @@ namespace WEC_Builder
             // 연결정보ToolStripMenuItem
             // 
             this.연결정보ToolStripMenuItem.Name = "연결정보ToolStripMenuItem";
-            this.연결정보ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.연결정보ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.연결정보ToolStripMenuItem.Text = "연결정보";
             this.연결정보ToolStripMenuItem.Click += new System.EventHandler(this.연결정보ToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(121, 6);
             // 
             // sP만들기ToolStripMenuItem
             // 
             this.sP만들기ToolStripMenuItem.Name = "sP만들기ToolStripMenuItem";
-            this.sP만들기ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sP만들기ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.sP만들기ToolStripMenuItem.Text = "SP만들기";
             this.sP만들기ToolStripMenuItem.Click += new System.EventHandler(this.sP만들기ToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(121, 6);
+            // 
+            // baseSETToolStripMenuItem
+            // 
+            this.baseSETToolStripMenuItem.Name = "baseSETToolStripMenuItem";
+            this.baseSETToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.baseSETToolStripMenuItem.Text = "Base SET";
+            this.baseSETToolStripMenuItem.Click += new System.EventHandler(this.baseSETToolStripMenuItem_Click);
             // 
             // 웹코드ToolStripMenuItem
             // 
@@ -173,21 +191,21 @@ namespace WEC_Builder
             // 목록코드ToolStripMenuItem
             // 
             this.목록코드ToolStripMenuItem.Name = "목록코드ToolStripMenuItem";
-            this.목록코드ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.목록코드ToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.목록코드ToolStripMenuItem.Text = "목록코드";
             this.목록코드ToolStripMenuItem.Click += new System.EventHandler(this.목록코드ToolStripMenuItem_Click);
             // 
             // 상세코드ToolStripMenuItem
             // 
             this.상세코드ToolStripMenuItem.Name = "상세코드ToolStripMenuItem";
-            this.상세코드ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.상세코드ToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.상세코드ToolStripMenuItem.Text = "상세코드";
             this.상세코드ToolStripMenuItem.Click += new System.EventHandler(this.상세코드ToolStripMenuItem_Click);
             // 
             // 처리코드ToolStripMenuItem
             // 
             this.처리코드ToolStripMenuItem.Name = "처리코드ToolStripMenuItem";
-            this.처리코드ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.처리코드ToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.처리코드ToolStripMenuItem.Text = "처리코드";
             this.처리코드ToolStripMenuItem.Click += new System.EventHandler(this.처리코드ToolStripMenuItem_Click);
             // 
@@ -202,7 +220,7 @@ namespace WEC_Builder
             // aDMToolStripMenuItem
             // 
             this.aDMToolStripMenuItem.Name = "aDMToolStripMenuItem";
-            this.aDMToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aDMToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.aDMToolStripMenuItem.Text = "ADM";
             this.aDMToolStripMenuItem.Click += new System.EventHandler(this.aDMToolStripMenuItem_Click);
             // 
@@ -211,6 +229,22 @@ namespace WEC_Builder
             this.게시판관리ToolStripMenuItem.Name = "게시판관리ToolStripMenuItem";
             this.게시판관리ToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
             this.게시판관리ToolStripMenuItem.Text = "게시판관리";
+            // 
+            // 기능ToolStripMenuItem
+            // 
+            this.기능ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dB복제ToolStripMenuItem1,
+            this.aPITestToolStripMenuItem});
+            this.기능ToolStripMenuItem.Name = "기능ToolStripMenuItem";
+            this.기능ToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.기능ToolStripMenuItem.Text = "기능";
+            // 
+            // dB복제ToolStripMenuItem1
+            // 
+            this.dB복제ToolStripMenuItem1.Name = "dB복제ToolStripMenuItem1";
+            this.dB복제ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.dB복제ToolStripMenuItem1.Text = "DB 복제";
+            this.dB복제ToolStripMenuItem1.Click += new System.EventHandler(this.dB복제ToolStripMenuItem1_Click);
             // 
             // statusStrip1
             // 
@@ -228,19 +262,12 @@ namespace WEC_Builder
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(101, 17);
             this.toolStripStatusLabel1.Text = "WEC-Builder v1.0";
             // 
-            // baseSETToolStripMenuItem
+            // aPITestToolStripMenuItem
             // 
-            this.baseSETToolStripMenuItem.Name = "baseSETToolStripMenuItem";
-            this.baseSETToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.baseSETToolStripMenuItem.Text = "Base SET";
-            this.baseSETToolStripMenuItem.Click += new System.EventHandler(this.baseSETToolStripMenuItem_Click);
-            // 
-            // 프로젝트복사하기ToolStripMenuItem
-            // 
-            this.프로젝트복사하기ToolStripMenuItem.Name = "프로젝트복사하기ToolStripMenuItem";
-            this.프로젝트복사하기ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.프로젝트복사하기ToolStripMenuItem.Text = "프로젝트복사하기";
-            this.프로젝트복사하기ToolStripMenuItem.Click += new System.EventHandler(this.프로젝트복사하기ToolStripMenuItem_Click);
+            this.aPITestToolStripMenuItem.Name = "aPITestToolStripMenuItem";
+            this.aPITestToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aPITestToolStripMenuItem.Text = "API Test";
+            this.aPITestToolStripMenuItem.Click += new System.EventHandler(this.aPITestToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -291,6 +318,9 @@ namespace WEC_Builder
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem baseSETToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 프로젝트복사하기ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 기능ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dB복제ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem aPITestToolStripMenuItem;
     }
 }
 

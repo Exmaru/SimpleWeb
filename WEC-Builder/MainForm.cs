@@ -467,5 +467,31 @@ namespace WEC_Builder
             frm.Height = this.Height;
             frm.Show();
         }
+
+        private void dB복제ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            AllClose();
+            var frm = new DbCopyForm(this);
+            frm.WindowState = FormWindowState.Maximized;
+            frm.FormBorderStyle = FormBorderStyle.None;
+            frm.ShowInTaskbar = false;
+            frm.MdiParent = this;
+            frm.Width = this.Width;
+            frm.Height = this.Height;
+            frm.Show();
+        }
+
+        private void aPITestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AllClose();
+            var frm = new ApiTestForm(this);
+            frm.WindowState = FormWindowState.Maximized;
+            frm.FormBorderStyle = FormBorderStyle.None;
+            frm.ShowInTaskbar = false;
+            frm.MdiParent = this;
+            frm.Width = this.Width;
+            frm.Height = this.Height;
+            frm.Show();
+        }
     }
 }

@@ -97,11 +97,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\ApiTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ApiTestForm.Designer.cs">
+      <DependentUpon>ApiTestForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\DbCheckForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\DbCheckForm.Designer.cs">
       <DependentUpon>DbCheckForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DbCopyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DbCopyForm.Designer.cs">
+      <DependentUpon>DbCopyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FindProjectForm.cs">
       <SubType>Form</SubType>
@@ -145,6 +157,12 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\ApiTestParameters.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Models\ApiTestParameters.Designer.cs">
+      <DependentUpon>ApiTestParameters.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ConfigHelper.cs" />
     <Compile Include="Models\Entities\DbTableInfo.cs" />
     <Compile Include="Models\Entities\ExSpInfo.cs" />
@@ -162,8 +180,14 @@
     <Compile Include="Queries\CreateViewQuery.cs" />
     <Compile Include="Queries\InitQuery.cs" />
     <Compile Include="Queries\QueryMake.cs" />
+    <EmbeddedResource Include="Forms\ApiTestForm.resx">
+      <DependentUpon>ApiTestForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\DbCheckForm.resx">
       <DependentUpon>DbCheckForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DbCopyForm.resx">
+      <DependentUpon>DbCopyForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindProjectForm.resx">
       <DependentUpon>FindProjectForm.cs</DependentUpon>
@@ -185,6 +209,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Models\ApiTestParameters.resx">
+      <DependentUpon>ApiTestParameters.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

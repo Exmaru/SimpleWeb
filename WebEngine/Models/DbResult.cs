@@ -61,7 +61,21 @@ namespace WebEngine
         {
             get
             {
-                return new DbRow(this.Table.Rows[0]);
+                try
+                {
+                    if (this.Table != null && this.Table.Rows != null && this.Table.Rows.Count > 0)
+                    {
+                        return new DbRow(this.Table.Rows[0]);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
 

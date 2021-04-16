@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 
-
 namespace WebEngine
 {
     public class ImageHelper
@@ -13,26 +12,23 @@ namespace WebEngine
         {
             var result = new ReturnValues<Image>();
 
-            try
+            FileInfo fi = new FileInfo(filePath);
+            if (fi.Exists)
             {
-                FileInfo fi = new FileInfo(filePath);
-                if (fi.Exists)
+                using (FileStream fs = File.OpenRead(fi.FullName))
                 {
-                    using (FileStream fs = File.OpenRead(fi.FullName))
                     using (Image image = Image.FromStream(fs, false, false))
-                    using (Image pThumbnail = image.GetThumbnailImage(width, height, delegate { return false; }, IntPtr.Zero))
                     {
-                        result.Success(fi.Length, pThumbnail);
+                        using (Image pThumbnail = image.GetThumbnailImage(width, height, delegate { return false; }, IntPtr.Zero))
+                        {
+                            result.Success(fi.Length, pThumbnail);
+                        }
                     }
                 }
-                else
-                {
-                    result.Error("대상 파일이 존재하지 않습니다.");
-                }
             }
-            catch (Exception ex)
+            else
             {
-                result.Error(ex);
+                result.Error("대상 파일이 존재하지 않습니다.");
             }
 
 
@@ -297,6 +293,159 @@ namespace WebEngine
             return Task.Factory.StartNew(() => Crop(memory, exportPath, targetX, targetY));
         }
 
+
+        public static string ThumbnailPath(string FilePath, int width, int height)
+        {
+            string result = "#";
+
+     
+            FileInfo fi = new FileInfo(HttpContext.Current.Server.MapPath(FilePath));
+            if (fi.Exists)
+            {
+                string Path = $"~/UploadFiles/Thumbnails/{width}x{height}";
+                string PathFile = $"/UploadFiles/Thumbnails/{width}x{height}/{fi.Name}";
+                string PyPath = HttpContext.Current.Server.MapPath(Path);
+                string PyFile = System.IO.Path.Combine(PyPath, fi.Name);
+
+                FileInfo Target = new FileInfo(PyFile);
+                if (Target.Exists)
+                {
+                    result = PathFile;
+                }
+                else
+                {
+                    DirectoryInfo di = new DirectoryInfo(PyPath);
+                    if (!di.Exists) di.Create();
+
+                    using (FileStream fs = File.OpenRead(fi.FullName))
+                    using (Image image = Image.FromStream(fs, false, false))
+                    using (Image pThumbnail = image.GetThumbnailImage(width, height, delegate { return false; }, IntPtr.Zero))
+                    {
+                        pThumbnail.Save(PyFile);
+                        result = PathFile;
+                    }
+                }
+            }
+
+
+            return result;
+        }
+
+        public static string CropPath(string FilePath, int width, int height)
+        {
+            string result = "#";
+
+
+            FileInfo fi = new FileInfo(HttpContext.Current.Server.MapPath(FilePath));
+            if (fi.Exists)
+            {
+                string Path = $"~/UploadFiles/Crop/{width}x{height}";
+                string PathFile = $"/UploadFiles/Crop/{width}x{height}/{fi.Name}";
+                string PyPath = HttpContext.Current.Server.MapPath(Path);
+                string PyFile = System.IO.Path.Combine(PyPath, fi.Name);
+
+                FileInfo Target = new FileInfo(PyFile);
+                if (Target.Exists)
+                {
+                    result = PathFile;
+                }
+                else
+                {
+                    var rtn = CreateCrop(fi.FullName, width, height);
+                    if (rtn.Check)
+                    {
+                        DirectoryInfo di = new DirectoryInfo(PyPath);
+                        if (!di.Exists) di.Create();
+                        using (Image img = rtn.Data)
+                        {
+                            img.Save(PyFile);
+                            result = PathFile;
+                        }
+                    }
+                }
+            }
+
+
+            return result;
+        }
+
+        public static string ThumbnailView(string FilePath, int width, int height)
+        {
+            FileInfo fi = new FileInfo(HttpContext.Current.Server.MapPath(FilePath));
+
+            if (fi.Exists)
+            {
+                try
+                {
+                    var rtn = CreateThumbnail(fi.FullName, width, height);
+                    if (rtn.Check)
+                    {
+                        byte[] arr = null;
+                        if (FilePath.EndsWith("gif", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Logger.Current.Debug($"gif");
+                            arr = imageToByteArray(rtn.Data, System.Drawing.Imaging.ImageFormat.Gif);
+                        }
+                        else if (FilePath.EndsWith("png", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Logger.Current.Debug($"png");
+                            arr = imageToByteArray(rtn.Data, System.Drawing.Imaging.ImageFormat.Png);
+                        }
+                        else
+                        {
+                            Logger.Current.Debug($"jpg");
+                            arr = imageToByteArray(rtn.Data, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        }
+
+                        if (arr != null)
+                        {
+                            return "data:image/png;base64," + Convert.ToBase64String(arr, Base64FormattingOptions.None);
+                        }
+                        else
+                        {
+                            arr = System.IO.File.ReadAllBytes(fi.FullName);
+                            return "data:image/png;base64," + Convert.ToBase64String(arr, Base64FormattingOptions.None);
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception(rtn.Message);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Current.Error(ex);
+                    byte[] filebytes = System.IO.File.ReadAllBytes(fi.FullName);
+                    return "data:image/png;base64," + Convert.ToBase64String(filebytes, Base64FormattingOptions.None);
+                }
+            }
+            else
+            {
+                throw new FileNotFoundException("대상 이미지가 존재하지 않습니다.");
+            }
+        }
+
+        public static byte[] imageToByteArray(System.Drawing.Image imageIn, System.Drawing.Imaging.ImageFormat format)
+        {
+            try
+            {
+                MemoryStream ms = new MemoryStream();
+                imageIn.Save(ms, format);
+                return ms.ToArray();
+            }
+            catch (Exception ex)
+            {
+                Logger.Current.Error(ex);
+                return null;
+            }
+        }
+
+        public static Image ByteArrayToImage(byte[] bytes)
+        {
+            MemoryStream ms = new MemoryStream(bytes);
+            Image recImg = Image.FromStream(ms);
+            return recImg;
+        }
     }
 
     public static class ExtendImageHelper
@@ -638,5 +787,6 @@ namespace WebEngine
             }
             return bmp;
         }
+
     }
 }
